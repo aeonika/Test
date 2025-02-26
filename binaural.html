@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Ondas Binaurales</title>
+    <style>
+        /* Estilos generales */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #000;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            background: radial-gradient(circle, #1a1a1a, #000);
+            position: relative;
+            overflow-x: hidden;
+        }
+
+         /* Barra de navegación */
+        .navbar {
+            width: 100%;
+            background-color: #1a1a1a;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-bottom: 2px solid #00aaff;
+            box-shadow: 0 0 10px rgba(0, 170, 255, 0.5);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            gap: 20px;
+        }
+
+        .navbar ul li {
+            display: inline;
+            position: relative;
+        }
+
+        .navbar ul li a {
+            color: #00aaff;
+            text-decoration: none;
+            font-size: 1rem;
+            transition: color 0.3s ease, text-shadow 0.3s ease;
+        }
+
+        .navbar ul li a:hover {
+            color: #0088cc;
+            text-shadow: 0 0 10px #00aaff, 0 0 20px #00aaff;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #1a1a1a;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+.dropdown-content.active {
+    display: block; /* Visible cuando tiene la clase 'active' */
+}
+
+        .dropdown-content a {
+            color: #00aaff;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            text-align: left;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #333;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        /* Contenedor del logo */
+        .logo-container {
+            margin-bottom: 20px;
+            text-align: center;
+            width: 100%;
+        }
+
+        .logo-container img {
+            max-width: 50%;
+            height: auto;
+            filter: drop-shadow(0 0 10px #00aaff);
+        }
+ /* Banner publicitario */
+        .banner {
+            width: 100%;
+max-width: 500px;
+            margin: 20px 0;
+            text-align: center;
+            transition: transform 0.3s ease, filter 0.3s ease;
+        }
+
+        .banner a {
+            display: inline-block;
+            width: 100%;
+        }
+
+        .banner img {
+            width: 100%;
+            border-radius: 10px;
+            filter: drop-shadow(0 0 10px #00aaff);
+            transition: transform 0.3s ease, filter 0.3s ease;
+        }
+
+        .banner:hover {
+            transform: scale(1.02);
+            filter: drop-shadow(0 0 20px #00aaff);
+        }
+
+ /* Contenedor principal */
+        .container {
+            text-align: center;
+            background-color: #1a1a1a;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 170, 255, 0.5);
+            width: 100%;
+            max-width: 400px; /* Ajustado para mejor proporción */
+            margin: 20px 0;
+        }
+
+        h1 {
+            font-size: 2em; /* Reducido para mejor ajuste */
+            color: #00aaff;
+            text-shadow: 0 0 10px #00aaff, 0 0 20px #00aaff;
+            margin-bottom: 20px;
+        }
+
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        label {
+            font-size: 1rem;
+            color: #00aaff;
+            text-shadow: 0 0 5px #00aaff;
+            text-align: left; /* Alineación a la izquierda */
+        }
+
+        input, button {
+            padding: 10px;
+            width: 100%;
+            border: 2px solid #00aaff;
+            border-radius: 25px;
+            background-color: #1a1a1a;
+            color: #00aaff;
+            font-size: 1rem;
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+            box-sizing: border-box; /* Asegura que el padding no afecte el ancho */
+        }
+
+        input:focus {
+            outline: none;
+            box-shadow: 0 0 10px #00aaff, 0 0 20px #00aaff;
+        }
+
+        button {
+            cursor: pointer;
+            background-color: #00aaff;
+            color: #000;
+            font-weight: bold;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0088cc;
+            box-shadow: 0 0 10px #00aaff, 0 0 20px #00aaff;
+            transform: translateY(-5px);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background-color: #1a1a1a;
+            color: #00aaff;
+        }
+
+        
+
+        /* Animación de fondo */
+        @keyframes glow {
+            0% {
+                background-position: 0 0;
+            }
+            50% {
+                background-position: 100% 0;
+            }
+            100% {
+                background-position: 0 0;
+            }
+        }
+
+        /* Fondo extendido hasta abajo */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, #00aaff, #000, #00aaff, #000);
+            z-index: -1;
+            opacity: 0.1;
+            animation: glow 10s infinite;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .logo-container img {
+                max-width: 80%;
+            }
+
+            
+
+        @media (max-width: 480px) {
+            .logo-container img {
+                max-width: 70%;
+            }
+
+         
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Barra de navegación -->
+    <nav class="navbar">
+        <ul>
+            <li><a href="index.html">Inicio</a></li>
+            <li class="dropdown">
+                <a href="index.html">Biblioteca</a>
+                <div class="dropdown-content">
+                    <a href="index.html#libros-espanol">Libros en Español</a>
+                    <a href="index.html#libros-ingles">Libros en Inglés</a>
+                    <a href="index.html#magick-otros-senderos">Magick, otros senderos</a>
+                    <a href="index.html#mitologia-filosofia">Mitología, Filosofía, Psicología Junguiana y varios</a>
+                    <a href="index.html#oraculos-mancias">Oráculos, Mancias, Tarot, manual y gráficos para imprimir</a>
+                    <a href="index.html#brujeria-neopaganismo">Brujería, Neopaganismo, Hechicería, Herbolaria</a>
+                </div>
+            </li>
+            <li class="dropdown">
+                <a href="#herramientas">Herramientas</a>
+                <div class="dropdown-content">
+                    <a href="#simulador-dream-machine">Simulador de Dream Machine</a>
+                    <a href="#tirada-tarot-3-cartas">Tirada de Tarot 3 Cartas</a>
+                    <a href="#generador-audios-binaurales">Generador de audios binaurales</a>
+                </div>
+            </li>
+            <li class="dropdown">
+                <a href="#video">Video</a>
+                <div class="dropdown-content">
+                    <a href="#tutoriales">Tutoriales</a>
+                    <a href="#conferencias">Conferencias</a>
+                    <a href="#documentales">Documentales</a>
+                </div>
+            </li>
+            <li class="dropdown">
+                <a href="#grimorio">Grimorio</a>
+                <div class="dropdown-content">
+                    <a href="#hechizos">Hechizos</a>
+                    <a href="#rituales">Rituales</a>
+                    <a href="#simbolos">Símbolos</a>
+                </div>
+            </li>
+            <li><a href="donacion.html">Dona 1 USDT</a></li>
+        </ul>
+    </nav>
+
+    <!-- Logo -->
+    <div class="logo-container">
+        <img src="https://i.ibb.co/PvyCc4xV/Copia-de-Copia-de-Copia-de-Copia-de-Gold-Black-Modern-and-Elegant-Creative-Agency-You-Tube-Channel-A.jpg" alt="Logo">
+    </div>
+
+ <!-- Banner publicitario -->
+    <div class="banner">
+        <a href="https://krizg2024.github.io/Tarot-Agora/">
+            <img src="https://i.ibb.co/xqF8NKHg/Tirada-de-tres-cartas.jpg" alt="Banner Publicitario">
+        </a>
+    </div>
+
+    <!-- Contenedor principal -->
+    <div class="container">
+        <h1>Generador de Audios Binaurales</h1>
+        <div class="controls">
+            <label for="baseFrequency">Frecuencia Base (Hz):</label>
+            <input type="number" id="baseFrequency" value="440" min="20" max="20000">
+            
+            <label for="frequencyDifference">Diferencia de Frecuencia (Hz):</label>
+            <input type="number" id="frequencyDifference" value="10" min="1" max="100">
+            
+            <label for="duration">Duración (segundos):</label>
+            <input type="number" id="duration" value="10" min="1" max="600">
+            
+            <button id="generateButton">Generar Audio</button>
+            <button id="stopButton" disabled>Detener Audio</button>
+            <button id="downloadButton" disabled>Descargar Audio</button>
+        </div>
+    </div>
+
+    
+
+    <script>
+
+//Binaural
+
+ let audioContext;
+        let oscillatorLeft;
+        let oscillatorRight;
+        let isPlaying = false;
+        let audioBlobUrl = null;
+
+        document.getElementById('generateButton').addEventListener('click', function() {
+            if (isPlaying) {
+                stopAudio();
+            }
+
+            const baseFrequency = parseFloat(document.getElementById('baseFrequency').value);
+            const frequencyDifference = parseFloat(document.getElementById('frequencyDifference').value);
+            const duration = parseFloat(document.getElementById('duration').value);
+
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+            // Crear osciladores
+            oscillatorLeft = audioContext.createOscillator();
+            oscillatorRight = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            const merger = audioContext.createChannelMerger(2);
+
+            oscillatorLeft.frequency.value = baseFrequency;
+            oscillatorRight.frequency.value = baseFrequency + frequencyDifference;
+
+            oscillatorLeft.connect(merger, 0, 0);
+            oscillatorRight.connect(merger, 0, 1);
+            merger.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+
+            oscillatorLeft.start();
+            oscillatorRight.start();
+
+            isPlaying = true;
+            document.getElementById('stopButton').disabled = false;
+            document.getElementById('downloadButton').disabled = true;
+
+            // Generar el archivo Wav
+            const sampleRate = audioContext.sampleRate;
+            const length = sampleRate * duration;
+            const leftChannel = new Float32Array(length);
+            const rightChannel = new Float32Array(length);
+
+            for (let i = 0; i < length; i++) {
+                leftChannel[i] = Math.sin(2 * Math.PI * baseFrequency * i / sampleRate);
+                rightChannel[i] = Math.sin(2 * Math.PI * (baseFrequency + frequencyDifference) * i / sampleRate);
+            }
+
+            // Crear el archivo Wav manualmente
+            const wavBuffer = createWavFile([leftChannel, rightChannel], sampleRate);
+            const blob = new Blob([wavBuffer], { type: 'audio/wav' });
+            audioBlobUrl = URL.createObjectURL(blob);
+
+            document.getElementById('downloadButton').disabled = false;
+
+            setTimeout(() => {
+                stopAudio();
+            }, duration * 1000);
+        });
+
+        document.getElementById('stopButton').addEventListener('click', function() {
+            stopAudio();
+        });
+
+        document.getElementById('downloadButton').addEventListener('click', function() {
+            if (audioBlobUrl) {
+                const a = document.createElement('a');
+                a.href = audioBlobUrl;
+                a.download = `binaural_${document.getElementById('baseFrequency').value}Hz_${document.getElementById('frequencyDifference').value}Hz_${document.getElementById('duration').value}s.wav`;
+                a.click();
+            }
+        });
+
+        function stopAudio() {
+            if (oscillatorLeft) {
+                oscillatorLeft.stop();
+                oscillatorLeft.disconnect();
+            }
+            if (oscillatorRight) {
+                oscillatorRight.stop();
+                oscillatorRight.disconnect();
+            }
+            isPlaying = false;
+            document.getElementById('stopButton').disabled = true;
+        }
+
+        function createWavFile(channels, sampleRate) {
+            const numChannels = channels.length;
+            const length = channels[0].length;
+            const bitsPerSample = 16;
+            const byteRate = (sampleRate * numChannels * bitsPerSample) / 8;
+            const blockAlign = (numChannels * bitsPerSample) / 8;
+            const dataSize = length * numChannels * 2; // 2 bytes per sample (16 bits)
+
+            const buffer = new ArrayBuffer(44 + dataSize);
+            const view = new DataView(buffer);
+
+            // Escribir el encabezado Wav
+            writeString(view, 0, 'RIFF'); // Chunk ID
+            view.setUint32(4, 36 + dataSize, true); // Chunk Size
+            writeString(view, 8, 'WAVE'); // Format
+            writeString(view, 12, 'fmt '); // Subchunk1 ID
+            view.setUint32(16, 16, true); // Subchunk1 Size (16 for PCM)
+            view.setUint16(20, 1, true); // Audio Format (1 for PCM)
+            view.setUint16(22, numChannels, true); // Number of Channels
+            view.setUint32(24, sampleRate, true); // Sample Rate
+            view.setUint32(28, byteRate, true); // Byte Rate
+            view.setUint16(32, blockAlign, true); // Block Align
+            view.setUint16(34, bitsPerSample, true); // Bits Per Sample
+            writeString(view, 36, 'data'); // Subchunk2 ID
+            view.setUint32(40, dataSize, true); // Subchunk2 Size
+
+            // Escribir los datos de audio
+            let offset = 44;
+            for (let i = 0; i < length; i++) {
+                for (let channel = 0; channel < numChannels; channel++) {
+                    const sample = Math.max(-1, Math.min(1, channels[channel][i])); // Asegurar que el sample esté entre -1 y 1
+                    const intSample = sample < 0 ? sample * 32768 : sample * 32767; // Convertir a 16 bits
+                    view.setInt16(offset, intSample, true);
+                    offset += 2;
+                }
+            }
+
+            return buffer;
+        }
+
+        function writeString(view, offset, string) {
+            for (let i = 0; i < string.length; i++) {
+                view.setUint8(offset + i, string.charCodeAt(i));
+            }
+        }
+       // Cerrar desplegables al hacer clic en una opción
+document.querySelectorAll('.dropdown-content a').forEach(link => {
+    link.addEventListener('click', () => {
+        // Oculta todos los desplegables al hacer clic en un enlace
+        document.querySelectorAll('.dropdown-content').forEach(dropdown => {
+            dropdown.classList.remove('active');
+        });
+    });
+});
+
+// Manejar desplegables al hacer clic en el botón
+document.querySelectorAll('.dropdown').forEach(dropdown => {
+    dropdown.addEventListener('click', (event) => {
+        event.stopPropagation(); // Evita que el evento se propague
+        const dropdownContent = dropdown.querySelector('.dropdown-content');
+        const isActive = dropdownContent.classList.contains('active');
+
+        // Cerrar todos los desplegables
+        document.querySelectorAll('.dropdown-content').forEach(d => {
+            d.classList.remove('active');
+        });
+
+        // Abrir el desplegable actual si no estaba abierto
+        if (!isActive) {
+            dropdownContent.classList.add('active');
+        }
+    });
+});
+
+// Cerrar desplegables al hacer clic fuera de ellos
+document.addEventListener('click', () => {
+    document.querySelectorAll('.dropdown-content').forEach(dropdown => {
+        dropdown.classList.remove('active');
+    });
+});
+
+// Manejar el comportamiento de hover
+document.querySelectorAll('.dropdown').forEach(dropdown => {
+    const dropdownContent = dropdown.querySelector('.dropdown-content');
+
+    // Mostrar el desplegable al pasar el mouse
+    dropdown.addEventListener('mouseenter', () => {
+        dropdownContent.classList.add('active');
+    });
+
+    // Ocultar el desplegable al quitar el mouse
+    dropdown.addEventListener('mouseleave', () => {
+        dropdownContent.classList.remove('active');
+    });
+});
+    </script>
+</body>
+</html>
