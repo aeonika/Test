@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apoya el Proyecto - Biblioteca Magia del Caos</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Enlace a FontAwesome para los íconos -->
+    <link href="styles.css" rel="stylesheet">
+    <style>
+        .donation-container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .donation-section {
+            background: rgba(26, 26, 26, 0.8);
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid #00aaff;
+            box-shadow: 0 0 15px rgba(0, 170, 255, 0.3);
+        }
+
+        .donation-title {
+            color: #00aaff;
+            text-align: center;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px rgba(0, 170, 255, 0.5);
+        }
+
+        .donation-option {
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .crypto-address {
+            background: #000;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            margin: 10px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        /* Add responsive styles */
+        @media screen and (max-width: 768px) {
+            .donation-container {
+                padding: 10px;
+                margin: 20px auto;
+            }
+
+            .donation-section {
+                padding: 20px;
+            }
+
+            .donation-option {
+                padding: 15px;
+            }
+
+            .crypto-address {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .crypto-address span {
+                width: 100%;
+                word-break: break-all;
+                font-size: 14px;
+            }
+
+            .copy-button {
+                width: 100%;
+                margin-top: 10px;
+            }
+
+            .qr-code {
+                max-width: 150px;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            .donation-container {
+                padding: 5px;
+            }
+
+            .donation-section {
+                padding: 15px;
+            }
+
+            .donation-title {
+                font-size: 1.5em;
+            }
+
+            .donation-option h3 {
+                font-size: 1.2em;
+            }
+
+            .whatsapp-button {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        .copy-button {
+            background: #00aaff;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            color: #000;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .copy-button:hover {
+            background: #0088cc;
+            transform: translateY(-2px);
+        }
+
+        .whatsapp-button {
+            display: inline-flex;
+            align-items: center;
+            background: #25D366;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 25px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+        }
+
+        .whatsapp-button i {
+            margin-right: 10px;
+        }
+
+        .whatsapp-button:hover {
+            background: #128C7E;
+            transform: translateY(-2px);
+        }
+
+        .qr-code {
+            max-width: 200px;
+            margin: 20px auto;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="navbar-logo">
+            <img src="https://i.ibb.co/r1jmr8t/Pics-Art-12-04-08-42-09.png" alt="Logo">
+        </div>
+        <ul>
+            <li><a href="index.html">Inicio</a></li>
+            <li class="dropdown">
+                <a href="#biblioteca">Biblioteca</a>
+                <div class="dropdown-content">
+                    <a href="index.html#libros-espanol">Libros en Español</a>
+                    <a href="index.html#libros-ingles">Libros en Inglés</a>
+                    <a href="index.html#magick-otros-senderos">Magick, otros senderos</a>
+                    <a href="index.html#mitologia-filosofia">Mitología, Filosofía, Psicología Junguiana y varios</a>
+                    <a href="index.html#oraculos-mancias">Oráculos, Mancias, Tarot, manual y gráficos para imprimir</a>
+                    <a href="index.html#brujeria-neopaganismo">Brujería, Neopaganismo, Hechicería, Herbolaria</a>
+                </div>
+            </li>
+            <li class="dropdown">
+                <a href="#videos">Videoteca</a>
+                <div class="dropdown-content">
+                    <a href="videos.html#featured">Videos Destacados</a>
+                    <a href="videos.html#audiobooks">Audiolibros</a>
+                    <a href="videos.html#tutorials">Tutoriales y Guías</a>
+                    <a href="videos.html#book-reviews">Analisis y Reseñas de Libros</a>
+                    <a href="videos.html#documentaries">Documentales y Entrevistas</a>
+                </div>
+            </li>
+            <li><a href="apoyo.html">Dona 1USDT(Apoya este proyecto)</a></li>
+        </ul>
+    </nav>
+
+    <!-- Botonera flotante para redes sociales -->
+    <div class="floating-social-buttons">
+        <p class="floating-message">;)</p>
+        <a href="https://instagram.com/biblioteca.aeonika" target="_blank" class="floating-button instagram">
+            <i class="fab fa-instagram"></i>
+        </a>
+        <a href="https://facebook.com/magiadelcaos333" target="_blank" class="floating-button facebook">
+            <i class="fab fa-facebook"></i>
+        </a>
+        <a href="https://whatsapp.com/channel/0029VaKGJzC23n3d8ai7nr3X" target="_blank" class="floating-button whatsapp">
+            <i class="fab fa-whatsapp"></i>
+        </a>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1>Apoya este Proyecto</h1>
+            <p>Tu apoyo nos ayuda a mantener y mejorar la biblioteca</p>
+        </div>
+    </section>
+
+<!-- Mensaje de bienvenida -->
+    <div class="welcome-message">
+        <p>Bienvenido a nuestra Biblioteca Digital. Explora nuestra colección de libros clásicos y contemporáneos. ¡Encuentra tu próxima lectura favorita!</p>
+    </div>
+
+    <!-- Donation Content -->
+    <div class="donation-container">
+        <div class="donation-section">
+            <h2 class="donation-title">Opciones de Donación</h2>
+            
+            <!-- USDT Option -->
+            <div class="donation-option">
+                <h3><i class="fab fa-ethereum"></i> Donar con USDT (Red Ethereum ERC-20)</h3>
+                <p>Puedes enviar USDT a la siguiente dirección:</p>
+                <div class="crypto-address">
+                    <span id="usdt-address">0xba19dcb8d38402d95dc5210f4da8152359ef7ecb</span>
+                    <button class="copy-button" onclick="copyToClipboard('usdt-address')">
+                        <i class="fas fa-copy"></i> Copiar
+                    </button>
+                </div>
+                <img src="https://i.ibb.co/wxNyKCS/photo-2025-03-26-23-30-31.jpg" alt="QR Code USDT" class="qr-code">
+            </div>
+
+            <!-- Argentina Option -->
+            <div class="donation-option">
+                <h3><i class="fas fa-university"></i> Donar desde Argentina</h3>
+                <p>Para transferencias bancarias en Argentina, contáctanos por WhatsApp:</p>
+                <a href="https://wa.me/+5491127470451?text=Hola! Quisiera hacer una donación a la biblioteca. ¿Podrías compartirme el CBU o Alias?" 
+                   class="whatsapp-button" target="_blank">
+                    <i class="fab fa-whatsapp"></i> Solicitar datos bancarios
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+   <footer class="footer">
+    <div class="footer-content">
+        <!-- Sección de redes sociales con el logo -->
+        <div class="footer-section">
+            <!-- Logo sobre el título -->
+            <div class="footer-logo">
+                <img src="https://i.ibb.co/r1jmr8t/Pics-Art-12-04-08-42-09.png" alt="Logo">
+            </div>
+            <h3 class="footer-title">Seguinos en redes</h3>
+            <div class="social-buttons">
+                <a href="https://instagram.com/biblioteca.aeonika" target="_blank" class="social-button instagram">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a href="https://facebook.com/magiadelcaos.333" target="_blank" class="social-button facebook">
+                    <i class="fab fa-facebook"></i>
+                </a>
+                <a href="https://whatsapp.com/channel/0029VaKGJzC23n3d8ai7nr3X" target="_blank" class="social-button whatsapp">
+                    <i class="fab fa-whatsapp"></i>
+                </a>
+            </div>
+        </div>
+            <!-- Sección de compartir -->
+            <div class="footer-section">
+                <h3 class="footer-title">Compartir</h3>
+                <p>¡Apoyanos compartiendo!</p>
+                <div class="share-dropdown">
+                    <button class="share-button">
+                        <i class="fas fa-share-alt"></i> Compartir
+                    </button>
+                    <div class="share-dropdown-content">
+                        <a href="#" class="share-option whatsapp" data-url="https://aeonika.github.io/biblioteca-magia-del-caos/" data-text="¡Mira esta página!">
+                            <i class="fab fa-whatsapp"></i> WhatsApp
+                        </a>
+                        <a href="#" class="share-option facebook" data-url="https://aeonika.github.io/biblioteca-magia-del-caos/">
+                            <i class="fab fa-facebook"></i> Facebook
+                        </a>
+                        <a href="#" class="share-option instagram" data-url="https://aeonika.github.io/biblioteca-magia-del-caos/">
+                            <i class="fab fa-instagram"></i> Instagram
+                        </a>
+                        <a href="#" class="share-option copy" data-url="https://aeonika.github.io/biblioteca-magia-del-caos/">
+                            <i class="fas fa-copy"></i> Copiar enlace
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección de contacto -->
+            <div class="footer-section">
+                <h3 class="footer-title">Contacto</h3>
+                <p>¿Querés reportar links caídos o ponerte en contacto? escribinos:</p>
+                <a href="mailto:aeonika.online@gmail.com" class="footer-link">aeonika.online@gmail.com</a>
+            </div>
+        </div>
+
+        <!-- Derechos de autor -->
+        <div class="footer-bottom">
+            <p>©2025 Aeonika Biblioteca Magia del Caos. Administrador Kriz G.</p>
+        </div>
+    </footer>
+    
+       
+   
+<script>
+
+        // Función para copiar la dirección USDT
+        function copyToClipboard(elementId) {
+            const text = document.getElementById(elementId).textContent;
+            navigator.clipboard.writeText(text)
+                .then(() => {
+                    const button = document.querySelector('.copy-button');
+                    const originalText = button.innerHTML;
+                    button.innerHTML = '<i class="fas fa-check"></i> ¡Copiado!';
+                    setTimeout(() => {
+                        button.innerHTML = '<i class="fas fa-copy"></i> Copiar';
+                    }, 2000);
+                })
+                .catch(err => {
+                    console.error('Error al copiar: ', err);
+                    alert('No se pudo copiar el texto');
+                });
+        }
+
+        // Función para compartir en redes sociales y copiar enlace
+        document.querySelectorAll('.share-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.preventDefault();
+                const url = option.getAttribute('data-url');
+                const text = option.getAttribute('data-text') || '';
+
+                if (option.classList.contains('whatsapp')) {
+                    window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text + ' ' + url)}`, '_blank');
+                } else if (option.classList.contains('facebook')) {
+                    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank');
+                } else if (option.classList.contains('instagram')) {
+                    window.open(`https://www.instagram.com/?url=${encodeURIComponent(url)}`, '_blank');
+                } else if (option.classList.contains('copy')) {
+                    navigator.clipboard.writeText(url).then(() => {
+                        alert('Enlace copiado al portapapeles');
+                    });
+                }
+            });
+        });
+
+        // Manejar el menú desplegable de compartir
+        const shareButton = document.querySelector('.share-button');
+        const shareDropdown = document.querySelector('.share-dropdown');
+
+        shareButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            shareDropdown.classList.toggle('active');
+        });
+
+        // Cerrar el menú al hacer clic fuera
+        document.addEventListener('click', (e) => {
+            if (!shareDropdown.contains(e.target)) {
+                shareDropdown.classList.remove('active');
+            }
+        });
+</script>
+ 
+       
+
+ 
+</body>
+</html>

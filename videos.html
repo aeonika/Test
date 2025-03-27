@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Videos - Biblioteca Magia del Caos</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="styles.css" rel="stylesheet">
+    <link href="videos.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="navbar-logo">
+            <img src="https://i.ibb.co/r1jmr8t/Pics-Art-12-04-08-42-09.png" alt="Logo">
+        </div>
+        <ul>
+            <li><a href="index.html">Inicio</a></li>
+            <li class="dropdown">
+                <a href="#biblioteca">Biblioteca</a>
+                <div class="dropdown-content">
+                    <a href="index.html#libros-espanol">Libros en Español</a>
+                    <a href="index.html#libros-ingles">Libros en Inglés</a>
+                    <a href="index.html#magick-otros-senderos">Magick, otros senderos</a>
+                    <a href="index.html#mitologia-filosofia">Mitología, Filosofía, Psicología Junguiana y varios</a>
+                    <a href="index.html#oraculos-mancias">Oráculos, Mancias, Tarot, manual y gráficos para imprimir</a>
+                    <a href="index.html#brujeria-neopaganismo">Brujería, Neopaganismo, Hechicería, Herbolaria</a>
+                </div>
+            </li>
+           
+            <!-- In the navbar, update the video dropdown section -->
+            <li class="dropdown">
+                <a href="#video">Videoteca</a>
+                <div class="dropdown-content">
+                    <a href="#featured">Videos Destacados</a>
+                    <a href="#audiobooks">Audiolibros</a>
+                    <a href="#tutorials">Tutoriales y Guías</a>
+                    <a href="#book-reviews">Analisis y Reseñas de Libros</a>
+                    <a href="#documentaries">Documentales y Entrevistas</a>
+                </div>
+            </li>
+           
+            <li><a href="apoyo.html">Dona 1USDT(Apoya este proyecto)</a></li>
+        </ul>
+    </nav>
+
+    <!-- Botonera flotante para redes sociales -->
+    <div class="floating-social-buttons">
+        <p class="floating-message">;)</p>
+        <a href="https://instagram.com/biblioteca.aeonika" target="_blank" class="floating-button instagram">
+            <i class="fab fa-instagram"></i>
+        </a>
+        <a href="https://facebook.com/magiadelcaos333" target="_blank" class="floating-button facebook">
+            <i class="fab fa-facebook"></i>
+        </a>
+        <a href="https://whatsapp.com/channel/0029VaKGJzC23n3d8ai7nr3X" target="_blank" class="floating-button whatsapp">
+            <i class="fab fa-whatsapp"></i>
+        </a>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1>Biblioteca de Videos</h1>
+            <p>Explora nuestra colección audiovisual</p>
+            <a href="#featured-videos" class="hero-button">Ver Videos Destacados</a>
+        </div>
+    </section>
+
+<!-- Mensaje de bienvenida -->
+    <div class="welcome-message">
+        <p>Bienvenido a nuestra sección de videos. ¡Encuentra guias, analisis, reseñas de libros o escucha un audiolibro!</p>
+    </div>
+
+    <!-- Video Categories -->
+    <div class="video-categories">
+        <div class="category-section">
+            <h2>Videos Destacados</h2>
+            <div class="video-grid" id="featured"></div>
+        </div>
+    
+        <div class="category-section">
+            <h2>Audiolibros</h2>
+            <div class="video-grid" id="audiobooks"></div>
+        </div>
+    
+        <div class="category-section">
+            <h2>Tutoriales y Guías</h2>
+            <div class="video-grid" id="tutorials"></div>
+        </div>
+    
+        <div class="category-section">
+            <h2>Análisis y Reseñas de Libros</h2>
+            <div class="video-grid" id="book-reviews"></div>
+        </div>
+
+        <div class="category-section">
+            <h2>Documentales y Entrevistas</h2>
+            <div class="video-grid" id="documentaries"></div>
+        </div>
+
+    </div>
+
+   <!-- Footer -->
+   <footer class="footer">
+    <div class="footer-content">
+        <!-- Sección de redes sociales con el logo -->
+        <div class="footer-section">
+            <!-- Logo sobre el título -->
+            <div class="footer-logo">
+                <img src="https://i.ibb.co/r1jmr8t/Pics-Art-12-04-08-42-09.png" alt="Logo">
+            </div>
+            <h3 class="footer-title">Seguinos en redes</h3>
+            <div class="social-buttons">
+                <a href="https://instagram.com/biblioteca.aeonika" target="_blank" class="social-button instagram">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a href="https://facebook.com/magiadelcaos.333" target="_blank" class="social-button facebook">
+                    <i class="fab fa-facebook"></i>
+                </a>
+                <a href="https://whatsapp.com/channel/0029VaKGJzC23n3d8ai7nr3X" target="_blank" class="social-button whatsapp">
+                    <i class="fab fa-whatsapp"></i>
+                </a>
+            </div>
+        </div>
+            <!-- Sección de compartir -->
+            <div class="footer-section">
+                <h3 class="footer-title">Compartir</h3>
+                <p>¡Apoyanos compartiendo!</p>
+                <div class="share-dropdown">
+                    <button class="share-button">
+                        <i class="fas fa-share-alt"></i> Compartir
+                    </button>
+                    <div class="share-dropdown-content">
+                        <a href="#" class="share-option whatsapp" data-url="https://aeonika.github.io/biblioteca-magia-del-caos/" data-text="¡Mira esta página!">
+                            <i class="fab fa-whatsapp"></i> WhatsApp
+                        </a>
+                        <a href="#" class="share-option facebook" data-url="https://aeonika.github.io/biblioteca-magia-del-caos/">
+                            <i class="fab fa-facebook"></i> Facebook
+                        </a>
+                        <a href="#" class="share-option instagram" data-url="https://aeonika.github.io/biblioteca-magia-del-caos/">
+                            <i class="fab fa-instagram"></i> Instagram
+                        </a>
+                        <a href="#" class="share-option copy" data-url="https://aeonika.github.io/biblioteca-magia-del-caos/">
+                            <i class="fas fa-copy"></i> Copiar enlace
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección de contacto -->
+            <div class="footer-section">
+                <h3 class="footer-title">Contacto</h3>
+                <p>¿Querés reportar links caídos o ponerte en contacto? escribinos:</p>
+                <a href="mailto:aeonika.online@gmail.com" class="footer-link">aeonika.online@gmail.com</a>
+            </div>
+        </div>
+
+        <!-- Derechos de autor -->
+        <div class="footer-bottom">
+            <p>©2025 Aeonika Biblioteca Magia del Caos. Administrador Kriz G.</p>
+        </div>
+    </footer>
+
+    <script src="videos.js"></script>
+    <script>
+
+ // Función para compartir en redes sociales y copiar enlace
+        document.querySelectorAll('.share-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.preventDefault();
+                const url = option.getAttribute('data-url');
+                const text = option.getAttribute('data-text') || '';
+
+                if (option.classList.contains('whatsapp')) {
+                    window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text + ' ' + url)}`, '_blank');
+                } else if (option.classList.contains('facebook')) {
+                    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank');
+                } else if (option.classList.contains('instagram')) {
+                    window.open(`https://www.instagram.com/?url=${encodeURIComponent(url)}`, '_blank');
+                } else if (option.classList.contains('copy')) {
+                    navigator.clipboard.writeText(url).then(() => {
+                        alert('Enlace copiado al portapapeles');
+                    });
+                }
+            });
+        });
+
+
+        // Manejar el menú desplegable de compartir
+                const shareButton = document.querySelector('.share-button');
+                const shareDropdown = document.querySelector('.share-dropdown');
+        
+                shareButton.addEventListener('click', (e) => {
+                    e.stopPropagation(); // Evita que el evento se propague
+                    shareDropdown.classList.toggle('active');
+                });
+        
+                // Cerrar el menú al hacer clic fuera
+                document.addEventListener('click', (e) => {
+                    if (!shareDropdown.contains(e.target)) {
+                        shareDropdown.classList.remove('active');
+                    }
+                });
+        </script>
+    
+</body>
+</html>
