@@ -21,6 +21,15 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Inter', sans-serif; background-color: var(--bg-deep); color: var(--text-primary); display: flex; height: 100vh; overflow: hidden; }
 
+        /* --- PANTALLA DE CARGA (SPLASH) --- */
+        #preloader { position: fixed; inset: 0; background: radial-gradient(circle at center, #1a1a2e, #030305); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 10000; transition: opacity 0.8s ease, visibility 0.8s; }
+        #preloader.hidden { opacity: 0; visibility: hidden; }
+        .loader-logo { height: 100px; filter: drop-shadow(0 0 15px var(--neon-blue)); animation: pulseLogo 2s infinite ease-in-out; }
+        .loader-bar-container { width: 180px; height: 2px; background: rgba(255,255,255,0.05); margin-top: 25px; border-radius: 10px; overflow: hidden; position: relative; }
+        .loader-bar { width: 100%; height: 100%; background: var(--neon-blue); animation: loadingProgress 2s infinite ease-in-out; }
+        @keyframes pulseLogo { 0%, 100% { transform: scale(1); opacity: 0.7; } 50% { transform: scale(1.03); opacity: 1; } }
+        @keyframes loadingProgress { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+
         /* --- LOGIN SCREEN --- */
         #loginOverlay { position: fixed; inset: 0; z-index: 5000; background: radial-gradient(circle at center, #1a1a2e, #030305); display: flex; align-items: center; justify-content: center; padding: 20px; }
         .login-card { width: 100%; max-width: 400px; padding: 40px; background: var(--bg-card); border-radius: 24px; border: 1px solid rgba(0, 170, 255, 0.2); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); text-align: center; }
@@ -120,6 +129,14 @@
     </style>
 </head>
 <body>
+
+    <!-- PANTALLA DE CARGA -->
+    <div id="preloader">
+        <img src="https://i.ibb.co/r1jmr8t/Pics-Art-12-04-08-42-09.png" alt="Aeonika Logo" class="loader-logo">
+        <div class="loader-bar-container">
+            <div class="loader-bar"></div>
+        </div>
+    </div>
 
     <div id="loader"></div>
 
@@ -341,6 +358,12 @@
             sb.auth.onAuthStateChange((_event, session) => {
                 if (session) setupAdminSession(session.user); else destroyAdminSession();
             });
+
+            // Ocultar pantalla de carga inicial
+            setTimeout(() => {
+                const preloader = document.getElementById('preloader');
+                if(preloader) preloader.classList.add('hidden');
+            }, 1000);
         });
 
         // --- SISTEMA DE MODALES ---
