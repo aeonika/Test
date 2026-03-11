@@ -187,8 +187,8 @@
         .auth-btn { width: 100%; padding: 14px; background: var(--neon-blue); color: #000; font-weight: 800; border: none; border-radius: 12px; cursor: pointer; transition: 0.3s; font-family: inherit; font-size: 1rem; }
         .auth-btn:hover { box-shadow: 0 0 20px var(--neon-blue-glow); transform: translateY(-2px); }
 
-        /* --- LOADER SECUNDARIO --- */
-        #loader { position: fixed; top: 0; left: 0; width: 100%; height: 3px; background: var(--neon-blue); z-index: 10001; display: none; }
+        /* --- LOADER --- */
+        #loader { position: fixed; top: 0; left: 0; width: 100%; height: 3px; background: var(--neon-blue); z-index: 10000; display: none; }
 
         /* --- FOOTER COMPLETO --- */
         .footer { background-color: #0a0a0f; padding: 60px 20px 20px; border-top: 1px solid rgba(0, 170, 255, 0.2); margin-top: 80px; }
@@ -212,32 +212,74 @@
             .modal-info { width: 60%; padding: 50px; }
             .modal-info h2 { font-size: 2.2rem; }
         }
+
+        /* --- REPARACIÓN DE NAVBAR RESPONSIVE (SOLO MÓVIL) --- */
         @media (max-width: 768px) {
             .title-big { font-size: 3rem; }
             .book-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
+
+            /* Logo de carga achicado */
+            .loader-logo { height: 80px; }
+            .loader-bar-container { width: 160px; }
+
+            /* NAVBAR RESPONSIVE SEGURO (Evita desbordamiento) */
+            .navbar { 
+                padding: 10px 15px; 
+                flex-wrap: nowrap; /* Mantiene 1 sola línea */
+                overflow: hidden; /* Evita que ensanche la pantalla y genere scroll horizontal */
+            }
             
-            /* Navbar alineado horizontalmente */
-            .navbar { flex-direction: row; flex-wrap: nowrap; padding: 10px 15px; gap: 10px; }
             .navbar-logo img { height: 26px; }
-            .nav-links { flex-wrap: nowrap; gap: 12px; justify-content: flex-end; width: auto; flex: 1; }
-            .nav-links a { font-size: 0.8rem; }
             
-            /* Logo de carga más pequeño en móvil */
-            .loader-logo { height: 75px; }
+            /* OCULTAMOS INICIO Y BIBLIOTECA EN MÓVIL PARA AHORRAR ESPACIO */
+            #navLinks > li:nth-child(1),
+            #navLinks > li:nth-child(2) { 
+                display: none !important; 
+            }
             
-            /* Iconos puros para el área de usuario (ahorra espacio) */
-            .user-badge { font-size: 0; padding: 6px 10px; }
-            .user-badge i { font-size: 1.1rem; margin: 0; }
-            .admin-panel-link { font-size: 0; padding: 6px 10px; gap: 0; }
-            .admin-panel-link i { font-size: 1.1rem; margin: 0; }
-            #userNavMenu div a[onclick] { font-size: 0 !important; }
-            #userNavMenu div a[onclick] i { font-size: 1.1rem; }
+            /* El contenedor de links empuja al usuario a la derecha */
+            .nav-links { 
+                flex: 1; 
+                justify-content: flex-end; 
+                gap: 5px; 
+                width: auto; 
+                margin: 0;
+            }
+            
+            /* Ajuste del contenedor inyectado por JS */
+            #userNavMenu > div {
+                flex-wrap: nowrap !important;
+                justify-content: flex-end !important;
+                gap: 6px !important;
+                width: auto !important;
+            }
+            
+            /* Rango y Nombre */
+            .user-badge { 
+                font-size: 0.65rem !important; 
+                padding: 5px 8px !important; 
+                white-space: nowrap; 
+            }
+            
+            /* Botón Dashboard (solo la llave roja) */
+            .admin-panel-link { 
+                font-size: 0 !important; 
+                padding: 5px 8px !important; 
+            }
+            .admin-panel-link i { font-size: 1rem; margin: 0; }
+            
+            /* Botón de Cerrar Sesión (solo icono) */
+            #userNavMenu a[onclick^="handleLogout"] { 
+                font-size: 0 !important; 
+                padding: 4px;
+            }
+            #userNavMenu a[onclick^="handleLogout"] i { font-size: 1.1rem; }
         }
     </style>
 </head>
 <body id="appBody">
 
-    <!-- PANTALLA DE CARGA -->
+    <!-- PANTALLA DE CARGA (NUEVO) -->
     <div id="preloader">
         <img src="https://i.ibb.co/r1jmr8t/Pics-Art-12-04-08-42-09.png" alt="Aeonika Logo" class="loader-logo">
         <div class="loader-bar-container">
@@ -319,25 +361,25 @@
             </div>
 
             <div class="auth-form-container">
-                <!-- Formulario de Login adaptado para "Enter" -->
-                <form id="form-login" class="auth-form active" onsubmit="event.preventDefault(); handleLogin();">
+                <!-- Formulario de Login -->
+                <div id="form-login" class="auth-form active">
                     <h2>Bienvenido de vuelta</h2>
                     <p class="sub">Accede a tu biblioteca personal y contenido desbloqueado.</p>
-                    <input type="email" id="loginEmail" placeholder="Correo Electrónico" required>
-                    <input type="password" id="loginPass" placeholder="Contraseña Secreta" required>
-                    <button type="submit" class="auth-btn">INICIAR SESIÓN</button>
+                    <input type="email" id="loginEmail" placeholder="Correo Electrónico">
+                    <input type="password" id="loginPass" placeholder="Contraseña Secreta">
+                    <button onclick="handleLogin()" class="auth-btn">INICIAR SESIÓN</button>
                     <p id="loginMsg" style="color: var(--neon-red); font-size: 0.8rem; margin-top: 15px; text-align: center;"></p>
-                </form>
+                </div>
 
-                <!-- Formulario de Registro adaptado para "Enter" -->
-                <form id="form-register" class="auth-form" onsubmit="event.preventDefault(); handleRegister();">
+                <!-- Formulario de Registro -->
+                <div id="form-register" class="auth-form">
                     <h2>Inicia tu Camino</h2>
                     <p class="sub">Únete al archivo y adquiere sabiduría oculta.</p>
-                    <input type="email" id="regEmail" placeholder="Correo Electrónico" required>
-                    <input type="password" id="regPass" placeholder="Crea una Contraseña (Min 6)" required>
-                    <button type="submit" class="auth-btn" style="background: var(--neon-gold);">REGISTRARME AHORA</button>
+                    <input type="email" id="regEmail" placeholder="Correo Electrónico">
+                    <input type="password" id="regPass" placeholder="Crea una Contraseña (Min 6)">
+                    <button onclick="handleRegister()" class="auth-btn" style="background: var(--neon-gold);">REGISTRARME AHORA</button>
                     <p id="regMsg" style="color: var(--neon-gold); font-size: 0.8rem; margin-top: 15px; text-align: center;"></p>
-                </form>
+                </div>
             </div>
         </div>
     </div>
@@ -393,7 +435,7 @@
 
             await refreshData();
             
-            // OCULTAR PRELOADER (AQUÍ ESTÁ EL CIERRE DEL SPLASH)
+            // Ocultar preloader después de cargar datos
             setTimeout(() => {
                 document.getElementById('preloader').classList.add('hidden');
             }, 800);
@@ -451,7 +493,7 @@
                 }
 
                 nav.innerHTML = `
-                    <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+                    <div style="display: flex; gap: 12px; align-items: center; justify-content: center; flex-wrap: wrap; width: 100%;">
                         ${adminButton}
                         <span class="user-badge ${badgeClass}" title="Tu Rango">
                             ${icon} ${roleName} | ${shortEmail}
@@ -484,6 +526,14 @@
             document.getElementById(`tab-${tab}`).classList.add('active');
             document.getElementById(`form-${tab}`).classList.add('active');
         }
+
+        // Add Enter key support
+        document.getElementById('loginPass').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') handleLogin();
+        });
+        document.getElementById('regPass').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') handleRegister();
+        });
 
         async function handleLogin() {
             const email = document.getElementById('loginEmail').value;
