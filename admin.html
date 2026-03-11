@@ -146,20 +146,20 @@
         .form-grid { display: grid; grid-template-columns: 1fr 300px; gap: 40px; }
         .input-group { margin-bottom: 25px; }
         .input-group label { display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 10px; text-transform: uppercase; }
-        .input-group input, .input-group select, .input-group textarea {
+        .input-group input[type="text"], .input-group input[type="email"], .input-group input[type="password"], .input-group input[type="url"], .input-group select, .input-group textarea {
             width: 100%; padding: 14px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1);
             border-radius: 12px; color: #fff; font-family: inherit; transition: 0.3s;
         }
         .input-group input:focus, .input-group select:focus, .input-group textarea:focus { border-color: var(--neon-blue); outline: none; box-shadow: 0 0 15px rgba(0, 170, 255, 0.1); }
         
         .file-upload { 
-            border: 2px dashed rgba(255,255,255,0.1); padding: 30px; border-radius: 16px; text-align: center; cursor: pointer; transition: 0.3s;
+            border: 2px dashed rgba(255,255,255,0.1); padding: 30px; border-radius: 16px; text-align: center; cursor: pointer; transition: 0.3s; display: block;
         }
         .file-upload:hover { border-color: var(--neon-blue); background: rgba(0, 170, 255, 0.02); }
 
         .btn {
             padding: 14px 28px; border-radius: 12px; font-weight: 700; font-size: 0.9rem; cursor: pointer; transition: 0.3s;
-            display: inline-flex; align-items: center; gap: 10px; border: none; font-family: inherit;
+            display: inline-flex; align-items: center; justify-content: center; gap: 10px; border: none; font-family: inherit;
         }
         .btn-primary { background: var(--neon-blue); color: #000; }
         .btn-primary:hover { box-shadow: 0 0 25px var(--neon-glow); transform: translateY(-2px); }
@@ -182,7 +182,7 @@
         #loader { position: fixed; top: 0; left: 0; width: 100%; height: 3px; background: var(--neon-blue); z-index: 10000; display: none; }
         .hidden { display: none !important; }
 
-        /* --- RESPONSIVE FIXES ORIGINALES --- */
+        /* --- RESPONSIVE FIXES --- */
         @media (max-width: 1024px) {
             .sidebar { 
                 position: fixed; left: 0; top: 0; bottom: 0; 
@@ -196,12 +196,9 @@
             .content-area { padding: 20px; padding-bottom: 80px; }
             .form-grid { grid-template-columns: 1fr; }
             
-            /* Invertimos el orden para que Crear Sección quede arriba en el móvil */
             #categoriesSection .form-grid { display: flex; flex-direction: column-reverse; gap: 30px; }
-            
             .user-badge { display: none; }
 
-            /* Ajustes del Login para pantallas pequeñas */
             .login-card { padding: 30px 20px; border-radius: 20px; max-width: 95%; }
             .login-card h2 { font-size: 1.4rem; }
             .login-card img { height: 40px; margin-bottom: 15px; }
@@ -214,7 +211,7 @@
     <div id="loader"></div>
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
 
-    <!-- MODALES CUSTOMIZADOS (Evitan el bloqueo en móviles) -->
+    <!-- MODALES CUSTOMIZADOS -->
     <div id="alertModal" class="custom-modal">
         <div class="modal-box">
             <i class="fas fa-info-circle" style="font-size: 3rem; color: var(--neon-blue); margin-bottom: 15px; display: block;"></i>
@@ -379,7 +376,10 @@
             <section id="categoriesSection" class="view-section">
                 <div class="form-grid">
                     <div class="data-card">
-                        <div class="card-header"><h4 style="margin: 0;">Lista de Secciones</h4></div>
+                        <div class="card-header">
+                            <h4 style="margin: 0;">Lista de Secciones</h4>
+                            <span style="font-size: 0.75rem; color: var(--text-secondary);">Usa las flechas para ordenar</span>
+                        </div>
                         <table id="catsTable">
                             <thead>
                                 <tr>
@@ -434,6 +434,7 @@
                                 <label>Descripción / Resumen (Opcional)</label>
                                 <textarea id="bookDesc" rows="4" placeholder="Breve descripción del contenido mágico..."></textarea>
                             </div>
+                            
                             <div class="input-group">
                                 <label>Archivo de Portada</label>
                                 <label for="bookFile" class="file-upload">
@@ -442,6 +443,15 @@
                                     <input type="file" id="bookFile" accept="image/*" class="hidden" onchange="handleFilePreview(this)">
                                 </label>
                             </div>
+
+                            <!-- NUEVA CASILLA PARA AUDIOLIBROS -->
+                            <div class="input-group" style="display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
+                                <input type="checkbox" id="bookIsAudio" style="width: 20px; height: 20px; accent-color: var(--neon-blue); cursor: pointer;">
+                                <label for="bookIsAudio" style="margin: 0; cursor: pointer; font-size: 0.85rem; text-transform: uppercase; color: var(--text-primary); font-weight: 700;">
+                                    <i class="fas fa-headphones-alt" style="color: var(--neon-blue); margin-right: 8px;"></i> Etiquetar como Audiolibro
+                                </label>
+                            </div>
+
                             <button type="submit" class="btn btn-primary" id="submitBtn" style="width: 100%; justify-content: center; padding: 18px; letter-spacing: 1px;">
                                 <i class="fas fa-save"></i> PUBLICAR EN EL ARCHIVO
                             </button>
@@ -471,12 +481,11 @@
         let sb;
         let books = [];
         let cats = [];
-        let currentEditImageUrl = ''; // Guarda la URL de la imagen actual durante la edición
+        let currentEditImageUrl = ''; 
 
         document.addEventListener('DOMContentLoaded', async () => {
             sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
             
-            // Check session
             const { data: { session } } = await sb.auth.getSession();
             if (session) setupAdminSession(session.user);
 
@@ -486,7 +495,7 @@
             });
         });
 
-        // --- SISTEMA DE MODALES (EVITA EL BLOQUEO MÓVIL) ---
+        // --- SISTEMA DE MODALES ---
         function customAlert(message) {
             const modal = document.getElementById('alertModal');
             document.getElementById('alertMessage').innerText = message;
@@ -521,7 +530,7 @@
 
         // --- AUTH ---
         async function handleLogin(e) {
-            if (e) e.preventDefault(); // Evita que la página se recargue al dar Enter
+            if (e) e.preventDefault();
             const email = document.getElementById('loginEmail').value;
             const pass = document.getElementById('loginPass').value;
             showLoader(true);
@@ -551,7 +560,6 @@
         // --- DATA ---
         async function refreshData() {
             showLoader(true);
-            // Solicitud ordenada según la versión que definimos antes
             const { data: catData } = await sb.from('categorias').select('*').order('orden', { ascending: true }).order('created_at', { ascending: true });
             const { data: bookData } = await sb.from('libros').select('*').order('created_at', { ascending: false });
             
@@ -575,7 +583,10 @@
             tbody.innerHTML = recent.map(b => `
                 <tr>
                     <td><img src="${b.image_url}" style="width:35px; height:50px; border-radius:5px; object-fit:cover; border: 1px solid rgba(255,255,255,0.1);"></td>
-                    <td><span style="font-weight:600;">${b.titulo}</span></td>
+                    <td>
+                        <span style="font-weight:600;">${b.titulo}</span>
+                        ${b.es_audiolibro ? '<i class="fas fa-headphones-alt" style="color: var(--neon-blue); margin-left: 5px;" title="Audiolibro"></i>' : ''}
+                    </td>
                     <td><span class="badge badge-cat">${b.categoria_slug}</span></td>
                     <td><span style="color:var(--text-secondary); font-size:0.8rem;">${new Date(b.created_at).toLocaleDateString()}</span></td>
                 </tr>
@@ -589,7 +600,10 @@
                     <td>
                         <div style="display:flex; align-items:center; gap:15px;">
                             <img src="${b.image_url}" style="width:40px; height:55px; border-radius:8px; object-fit:cover; border: 1px solid rgba(255,255,255,0.1);">
-                            <span style="font-weight:600;" class="row-title">${b.titulo}</span>
+                            <span style="font-weight:600;" class="row-title">
+                                ${b.titulo}
+                                ${b.es_audiolibro ? '<i class="fas fa-headphones-alt" style="color: var(--neon-blue); margin-left: 8px;" title="Audiolibro"></i>' : ''}
+                            </span>
                         </div>
                     </td>
                     <td><span class="badge badge-cat">${b.categoria_slug}</span></td>
@@ -609,7 +623,7 @@
             tbody.innerHTML = cats.map((c, index) => `
                 <tr>
                     <td><strong>${c.nombre}</strong></td>
-                    <td style="color: var(--text-secondary); font-size: 0.8rem;">${c.slug}</td>
+                    <td><span style="color: var(--text-secondary); font-size: 0.8rem;">${c.slug}</span></td>
                     <td style="text-align: center;">
                         <div style="display: flex; justify-content: center; gap: 5px;">
                             <button type="button" onclick="moveCat(${index}, -1)" class="btn btn-ghost btn-action" title="Subir" ${index === 0 ? 'disabled style="opacity:0.3; cursor:not-allowed"' : ''}><i class="fas fa-arrow-up"></i></button>
@@ -628,7 +642,7 @@
                 cats.map(c => `<option value="${c.slug}">${c.nombre}</option>`).join('');
         }
 
-        // --- ACTIONS ---
+        // --- ACCIONES ---
         async function deleteBook(id) {
             if(!(await customConfirm("¿Seguro que deseas borrar este tomo del archivo Aeonika permanentemente?"))) return;
             showLoader(true);
@@ -641,9 +655,7 @@
             const name = nameInput.value;
             if(!name) return;
             const slug = name.toLowerCase().replace(/ /g, '-').normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-            
             const newOrder = cats.length; 
-            
             showLoader(true);
             await sb.from('categorias').insert([{ nombre: name, slug: slug, orden: newOrder }]);
             nameInput.value = '';
@@ -659,12 +671,10 @@
 
         async function moveCat(index, direction) {
             if ((direction === -1 && index === 0) || (direction === 1 && index === cats.length - 1)) return;
-            
             let newCats = [...cats];
             let temp = newCats[index];
             newCats[index] = newCats[index + direction];
             newCats[index + direction] = temp;
-            
             showLoader(true);
             try {
                 for (let i = 0; i < newCats.length; i++) {
@@ -678,10 +688,10 @@
         }
 
         // --- CREACIÓN Y EDICIÓN DE LIBROS ---
-        
         function resetForm() {
             document.getElementById('bookForm').reset();
             document.getElementById('editBookId').value = '';
+            document.getElementById('bookIsAudio').checked = false; // Reset checkbox
             currentEditImageUrl = '';
             document.getElementById('imgPreview').classList.add('hidden');
             document.getElementById('previewPlaceholder').classList.remove('hidden');
@@ -700,23 +710,21 @@
             const book = books.find(b => b.id === id);
             if (!book) return;
 
-            resetForm(); // Limpiar residuos
+            resetForm(); 
 
-            // Llenar formulario con datos del libro
             document.getElementById('editBookId').value = book.id;
             document.getElementById('bookTitle').value = book.titulo;
             document.getElementById('bookCategory').value = book.categoria_slug;
             document.getElementById('bookLink').value = book.download_url;
             document.getElementById('bookDesc').value = book.descripcion || '';
+            document.getElementById('bookIsAudio').checked = book.es_audiolibro || false; // Cargar estado de audiolibro
             
-            // Configurar Imagen actual
             currentEditImageUrl = book.image_url;
             document.getElementById('imgPreview').src = book.image_url;
             document.getElementById('imgPreview').classList.remove('hidden');
             document.getElementById('previewPlaceholder').classList.add('hidden');
             document.getElementById('fileNameLabel').innerText = "Cambiar imagen de portada";
             
-            // Ajustar UI para Edición
             document.getElementById('submitBtn').innerHTML = '<i class="fas fa-edit"></i> ACTUALIZAR GRIMORIO';
             document.getElementById('formTitle').innerText = "Editando Registro";
             
@@ -746,7 +754,6 @@
                     const options = { maxSizeMB: 0.2, maxWidthOrHeight: 800, useWebWorker: true };
                     const compressed = await window.imageCompression(file, options);
                     
-                    // Limpieza del nombre de archivo original para prevenir fallos (Invalid Key)
                     const safeName = file.name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-zA-Z0-9.]/g, "_");
                     const fileName = `${Date.now()}_${safeName}`;
                     
@@ -762,17 +769,18 @@
                     categoria_slug: document.getElementById('bookCategory').value,
                     download_url: document.getElementById('bookLink').value,
                     descripcion: document.getElementById('bookDesc').value,
-                    image_url: finalImageUrl
+                    image_url: finalImageUrl,
+                    es_audiolibro: document.getElementById('bookIsAudio').checked // Guardar estado del checkbox
                 };
 
                 if (isEditing) {
                     const { error } = await sb.from('libros').update(bookData).eq('id', bookId);
                     if(error) throw error;
-                    customAlert("¡Tomo actualizado correctamente!");
+                    customAlert("¡Registro actualizado correctamente!");
                 } else {
                     const { error } = await sb.from('libros').insert([bookData]);
                     if(error) throw error;
-                    customAlert("¡Tomo archivado con éxito!");
+                    customAlert("¡Registro archivado con éxito!");
                 }
 
                 resetForm();
@@ -786,7 +794,7 @@
             }
         });
 
-        // --- UTILIDADES E INTERFAZ ---
+        // --- UTILIDADES ---
         function switchView(viewId, el) {
             document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
             document.getElementById(viewId + 'Section').classList.add('active');
