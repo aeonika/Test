@@ -113,21 +113,107 @@
         .facebook { background-color: #3b5998; }
         .whatsapp { background-color: #25D366; }
 
-        /* --- CONTENEDORES DE LIBROS --- */
+        /* --- CONTENEDORES DE LIBROS Y NUEVAS TARJETAS --- */
         .container { max-width: 1300px; margin: 0 auto; padding: 20px; }
         .category-title { text-align: center; color: var(--neon-blue); text-shadow: 0 0 10px var(--neon-blue); margin: 50px 0 30px; font-size: 1.8rem; text-transform: uppercase; }
-        .book-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 30px; }
+        .book-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 30px; }
         
         .book-card { 
-            background: #1a1a1a; border: 2px solid var(--neon-blue); border-radius: 15px; 
-            padding: 15px; transition: 0.3s; position: relative; overflow: hidden;
-            display: flex; flex-direction: column;
+            background: rgba(20, 20, 25, 0.6); 
+            border: 1px solid rgba(0, 170, 255, 0.15); 
+            border-radius: 16px; 
+            transition: all 0.4s ease; 
+            position: relative; 
+            overflow: hidden;
+            display: flex; 
+            flex-direction: column;
+            cursor: pointer;
         }
-        .book-card:hover { transform: translateY(-10px); box-shadow: 0 0 20px var(--neon-blue); }
-        .book-card img { width: 100%; aspect-ratio: 3/4; object-fit: cover; border-radius: 10px; margin-bottom: 15px; border: 1px solid var(--neon-blue); }
-        .book-card h3 { font-size: 1rem; color: var(--neon-blue); margin-bottom: 8px; line-height: 1.2; }
-        .book-card p { font-size: 0.8rem; color: #ccc; margin-bottom: 15px; flex-grow: 1; }
-        .book-card a { display: block; text-align: center; padding: 10px; background: var(--neon-blue); color: #000; text-decoration: none; border-radius: 20px; font-weight: bold; font-size: 0.8rem; }
+        .book-card:hover { 
+            transform: translateY(-8px); 
+            box-shadow: 0 15px 30px rgba(0, 170, 255, 0.2); 
+            border-color: var(--neon-blue);
+        }
+        .book-cover-container {
+            width: 100%;
+            padding-top: 145%; /* Crea una proporción perfecta para portadas */
+            position: relative;
+            overflow: hidden;
+            background: #000;
+        }
+        .book-cover-container img {
+            position: absolute; top: 0; left: 0;
+            width: 100%; height: 100%; object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        .book-card:hover .book-cover-container img {
+            transform: scale(1.08); /* Ligero zoom al pasar el mouse */
+        }
+        .book-info {
+            padding: 20px;
+            display: flex; flex-direction: column; flex-grow: 1;
+        }
+        .book-card h3 { 
+            font-size: 1.1rem; color: #fff; margin-bottom: 10px; line-height: 1.3;
+            display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+        }
+        .book-card p { 
+            font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;
+            display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+        }
+        .book-read-more {
+            margin-top: auto;
+            color: var(--neon-blue);
+            font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+            display: flex; align-items: center; gap: 5px;
+        }
+
+        /* --- MODAL (VENTANA EXTENDIDA DEL LIBRO) --- */
+        .book-modal-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px);
+            z-index: 9999; display: flex; align-items: center; justify-content: center;
+            opacity: 0; visibility: hidden; transition: 0.3s ease; padding: 20px;
+        }
+        .book-modal-overlay.active { opacity: 1; visibility: visible; }
+        .book-modal-content {
+            background: var(--bg-color);
+            border: 1px solid rgba(0, 170, 255, 0.3);
+            border-radius: 24px;
+            max-width: 900px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+            transform: scale(0.95);
+            transition: 0.3s ease;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.8), 0 0 30px rgba(0, 170, 255, 0.1);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .book-modal-overlay.active .book-modal-content { transform: scale(1); }
+        .close-modal {
+            position: absolute; top: 15px; right: 15px; 
+            background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.1);
+            color: #fff; font-size: 1.2rem; width: 40px; height: 40px; 
+            border-radius: 50%; cursor: pointer; z-index: 10; 
+            display: flex; align-items: center; justify-content: center; transition: 0.3s;
+        }
+        .close-modal:hover { background: var(--neon-blue); color: #000; transform: rotate(90deg); }
+        
+        .modal-body { display: flex; flex-direction: column; }
+        .modal-img-container { width: 100%; height: 350px; position: relative; }
+        .modal-img-container img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+        .modal-info { padding: 30px; display: flex; flex-direction: column; justify-content: center; }
+        .modal-info h2 { font-size: 1.8rem; color: #fff; margin-bottom: 15px; line-height: 1.2; }
+        .modal-info p { color: var(--text-muted); line-height: 1.6; font-size: 1rem; margin-bottom: 30px; }
+        .modal-info .btn-download {
+            display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+            padding: 15px 30px; background: var(--neon-blue); color: #000;
+            text-decoration: none; border-radius: 30px; font-weight: bold; font-size: 1rem;
+            transition: 0.3s; width: fit-content;
+        }
+        .modal-info .btn-download:hover { box-shadow: 0 0 25px var(--neon-blue-glow); transform: translateY(-2px); }
 
         /* --- BANNERS --- */
         .banner { width: 100%; max-width: 600px; margin: 40px auto; text-align: center; }
@@ -141,30 +227,26 @@
         .footer { background-color: #1a1a1a; padding: 40px 20px; border-top: 2px solid var(--neon-blue); margin-top: 60px; text-align: center; }
         .footer-logo img { width: 150px; margin-bottom: 20px; filter: drop-shadow(0 0 5px var(--neon-blue)); }
 
+        @media (min-width: 768px) {
+            .modal-body { flex-direction: row; }
+            .modal-img-container { width: 40%; height: auto; border-right: 1px solid rgba(255,255,255,0.05); }
+            .modal-img-container img { object-fit: cover; }
+            .modal-info { width: 60%; padding: 50px; }
+            .modal-info h2 { font-size: 2.2rem; }
+        }
+
         @media (max-width: 768px) {
             .title-small { font-size: 1rem; letter-spacing: 5px; }
             .title-big { font-size: 3rem; }
             .book-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
+            .book-card h3 { font-size: 0.95rem; }
+            .book-card p { font-size: 0.75rem; }
 
             /* Ajustes del Navbar para móviles: Siempre visible */
-            .navbar {
-                flex-direction: column;
-                gap: 15px;
-                padding: 15px 10px;
-            }
-            .nav-links {
-                justify-content: center;
-                gap: 15px;
-            }
-            .nav-links a {
-                font-size: 0.85rem;
-            }
-            .dropdown-content {
-                left: 50%;
-                transform: translateX(-50%);
-                text-align: center;
-                min-width: 180px;
-            }
+            .navbar { flex-direction: column; gap: 15px; padding: 15px 10px; }
+            .nav-links { justify-content: center; gap: 15px; }
+            .nav-links a { font-size: 0.85rem; }
+            .dropdown-content { left: 50%; transform: translateX(-50%); text-align: center; min-width: 180px; }
         }
     </style>
 </head>
@@ -227,6 +309,25 @@
         </div>
     </div>
 
+    <!-- MODAL DEL LIBRO (NUEVO) -->
+    <div id="bookModalOverlay" class="book-modal-overlay" onclick="if(event.target === this) closeBookModal()">
+        <div class="book-modal-content">
+            <button class="close-modal" onclick="closeBookModal()"><i class="fas fa-times"></i></button>
+            <div class="modal-body">
+                <div class="modal-img-container">
+                    <img id="modalBookImg" src="" alt="Portada">
+                </div>
+                <div class="modal-info">
+                    <h2 id="modalBookTitle">Título del Libro</h2>
+                    <p id="modalBookDesc">Descripción detallada del libro aparecerá aquí.</p>
+                    <a id="modalBookDownload" href="#" target="_blank" class="btn-download">
+                        <i class="fas fa-cloud-download-alt"></i> DESCARGAR TOMO
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- BOTONERA FLOTANTE ORIGINAL -->
     <div class="floating-social-buttons">
         <a href="https://instagram.com/biblioteca.aeonika" target="_blank" class="floating-button instagram"><i class="fab fa-instagram"></i></a>
@@ -259,7 +360,6 @@
         // --- CARGA DE DATOS PÚBLICOS ---
         async function refreshData() {
             showLoader(true);
-            // ACTULIZACIÓN: Ordenar categorías respetando la propiedad 'orden' configurada en el Admin
             const { data: cats } = await sb.from('categorias').select('*').order('orden', { ascending: true }).order('created_at', { ascending: true });
             const { data: books } = await sb.from('libros').select('*').order('created_at', { ascending: false });
             
@@ -270,7 +370,7 @@
             showLoader(false);
         }
 
-        // --- RENDERIZADO PÚBLICO ---
+        // --- RENDERIZADO PÚBLICO Y TARJETAS NUEVAS ---
         function renderPublicLibrary() {
             const container = document.getElementById('mainLibraryContent');
             const dropdown = document.getElementById('navDropdown');
@@ -278,10 +378,8 @@
             dropdown.innerHTML = '';
 
             catsData.forEach(cat => {
-                // Nav Dropdown
                 dropdown.innerHTML += `<a href="#cat-${cat.slug}">${cat.nombre}</a>`;
 
-                // Sections
                 const sectionBooks = booksData.filter(b => b.categoria_slug === cat.slug);
                 if (sectionBooks.length === 0) return;
 
@@ -297,18 +395,42 @@
                 sectionBooks.forEach(book => {
                     const card = document.createElement('div');
                     card.className = 'book-card';
-                    // Convertimos a lowercase y quitamos acentos para una búsqueda más precisa
+                    
                     const searchTitle = book.titulo.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
                     card.setAttribute('data-title', searchTitle);
+                    
+                    // Al hacer clic, abrimos el modal
+                    card.addEventListener('click', () => openBookModal(book));
+
                     card.innerHTML = `
-                        <img src="${book.image_url || 'https://via.placeholder.com/300x400?text=Cargando...'}" alt="Portada de ${book.titulo}" loading="lazy">
-                        <h3>${book.titulo}</h3>
-                        <p>${book.descripcion || ''}</p>
-                        <a href="${book.download_url}" target="_blank">DESCARGAR</a>
+                        <div class="book-cover-container">
+                            <img src="${book.image_url || 'https://via.placeholder.com/300x450?text=Grimorio'}" alt="Portada de ${book.titulo}" loading="lazy">
+                        </div>
+                        <div class="book-info">
+                            <h3>${book.titulo}</h3>
+                            <p>${book.descripcion || 'Sin descripción disponible.'}</p>
+                            <div class="book-read-more"><i class="fas fa-eye"></i> Leer Sinopsis</div>
+                        </div>
                     `;
                     grid.appendChild(card);
                 });
             });
+        }
+
+        // --- FUNCIONES DEL MODAL ---
+        function openBookModal(book) {
+            document.getElementById('modalBookTitle').innerText = book.titulo;
+            document.getElementById('modalBookDesc').innerText = book.descripcion || 'Este tomo no cuenta con una descripción extendida en los registros actuales.';
+            document.getElementById('modalBookImg').src = book.image_url || 'https://via.placeholder.com/300x450?text=Grimorio';
+            document.getElementById('modalBookDownload').href = book.download_url;
+            
+            document.getElementById('bookModalOverlay').classList.add('active');
+            document.body.style.overflow = 'hidden'; // Bloquear scroll de fondo
+        }
+
+        function closeBookModal() {
+            document.getElementById('bookModalOverlay').classList.remove('active');
+            document.body.style.overflow = ''; // Restaurar scroll
         }
 
         // --- UTILIDADES ---
@@ -316,10 +438,9 @@
             const term = document.getElementById('searchInput').value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
             const cards = document.querySelectorAll('.book-card');
             
-            // Si el buscador está vacío, mostramos todo sin calcular tanto
             if (term === '') {
                 cards.forEach(card => card.style.display = 'flex');
-                document.querySelectorAll('.category-section, section[id^="cat-"]').forEach(sec => sec.style.display = 'block');
+                document.querySelectorAll('section[id^="cat-"]').forEach(sec => sec.style.display = 'block');
                 return;
             }
 
@@ -328,7 +449,6 @@
                 card.style.display = title.includes(term) ? 'flex' : 'none';
             });
 
-            // Ocultar secciones vacías después de filtrar
             document.querySelectorAll('section[id^="cat-"]').forEach(section => {
                 const visibleCards = section.querySelectorAll('.book-card[style="display: flex;"]');
                 section.style.display = visibleCards.length > 0 ? 'block' : 'none';
