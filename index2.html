@@ -212,71 +212,66 @@
             .modal-info { width: 60%; padding: 50px; }
             .modal-info h2 { font-size: 2.2rem; }
         }
-        
-        /* --- AJUSTES EXCLUSIVOS DE RESPONSIVE (SOLO MÓVIL) --- */
+
+        /* --- REPARACIÓN DE NAVBAR RESPONSIVE (SOLO MÓVIL) --- */
         @media (max-width: 768px) {
             .title-big { font-size: 3rem; }
             .book-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
 
-            /* Achicar logo de carga */
+            /* Logo de carga achicado */
             .loader-logo { height: 80px; }
             .loader-bar-container { width: 160px; }
 
-            /* NAVBAR - 1 SOLA FILA */
+            /* NAVBAR RESPONSIVE SEGURO (Evita desbordamiento) */
             .navbar { 
-                flex-direction: row; 
-                flex-wrap: nowrap; 
                 padding: 10px 15px; 
-                gap: 10px; 
+                flex-wrap: nowrap; /* Mantiene 1 sola línea */
+                overflow: hidden; /* Evita que ensanche la pantalla y genere scroll horizontal */
             }
+            
             .navbar-logo img { height: 26px; }
-
+            
+            /* OCULTAMOS INICIO Y BIBLIOTECA EN MÓVIL PARA AHORRAR ESPACIO */
+            #navLinks > li:nth-child(1),
+            #navLinks > li:nth-child(2) { 
+                display: none !important; 
+            }
+            
+            /* El contenedor de links empuja al usuario a la derecha */
             .nav-links { 
                 flex: 1; 
-                flex-wrap: nowrap; 
-                justify-content: space-between; 
+                justify-content: flex-end; 
                 gap: 5px; 
-                margin: 0; 
+                width: auto; 
+                margin: 0;
             }
-
-            /* Ocultar botón Inicio para ahorrar espacio */
-            #navLinks > li:nth-child(1) { display: none; }
-
-            /* Mover Biblioteca a la izquierda junto al logo */
-            #navLinks > li.dropdown { margin-right: auto; }
-            #navLinks > li.dropdown > a { font-size: 0.85rem; padding: 5px 0; }
-            #navLinks > li.dropdown > a > i { display: none; } /* Ocultar flechita */
-            .dropdown-content { left: 0; min-width: 150px; }
-
-            /* Menú de Usuario a la derecha */
-            #userNavMenu { margin-left: auto; }
+            
+            /* Ajuste del contenedor inyectado por JS */
             #userNavMenu > div {
                 flex-wrap: nowrap !important;
-                gap: 8px !important;
+                justify-content: flex-end !important;
+                gap: 6px !important;
+                width: auto !important;
             }
-
+            
             /* Rango y Nombre */
             .user-badge { 
-                order: 1; 
-                font-size: 0.7rem !important; 
-                padding: 5px 10px !important; 
+                font-size: 0.65rem !important; 
+                padding: 5px 8px !important; 
                 white-space: nowrap; 
-                width: auto !important; 
             }
-
-            /* Botón Dashboard: Solo llave roja estética */
+            
+            /* Botón Dashboard (solo la llave roja) */
             .admin-panel-link { 
-                order: 2; 
-                font-size: 0 !important; /* Oculta el texto "Dashboard" */
-                padding: 6px 10px !important; 
-            }
-            .admin-panel-link i { font-size: 1.1rem; margin: 0; }
-
-            /* Botón de Cerrar Sesión (Ocultar texto "Salir") */
-            #userNavMenu a[onclick^="handleLogout"] { 
-                order: 3; 
                 font-size: 0 !important; 
-                text-decoration: none !important; 
+                padding: 5px 8px !important; 
+            }
+            .admin-panel-link i { font-size: 1rem; margin: 0; }
+            
+            /* Botón de Cerrar Sesión (solo icono) */
+            #userNavMenu a[onclick^="handleLogout"] { 
+                font-size: 0 !important; 
+                padding: 4px;
             }
             #userNavMenu a[onclick^="handleLogout"] i { font-size: 1.1rem; }
         }
@@ -442,8 +437,7 @@
             
             // Ocultar preloader después de cargar datos
             setTimeout(() => {
-                const preloader = document.getElementById('preloader');
-                if(preloader) preloader.classList.add('hidden');
+                document.getElementById('preloader').classList.add('hidden');
             }, 800);
         });
 
@@ -499,7 +493,7 @@
                 }
 
                 nav.innerHTML = `
-                    <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+                    <div style="display: flex; gap: 12px; align-items: center; justify-content: center; flex-wrap: wrap; width: 100%;">
                         ${adminButton}
                         <span class="user-badge ${badgeClass}" title="Tu Rango">
                             ${icon} ${roleName} | ${shortEmail}
@@ -533,11 +527,11 @@
             document.getElementById(`form-${tab}`).classList.add('active');
         }
 
-        // Event Listeners para tecla ENTER añadidos a los divs existentes
-        document.getElementById('loginPass').addEventListener('keypress', function (e) {
+        // Add Enter key support
+        document.getElementById('loginPass').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') handleLogin();
         });
-        document.getElementById('regPass').addEventListener('keypress', function (e) {
+        document.getElementById('regPass').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') handleRegister();
         });
 
