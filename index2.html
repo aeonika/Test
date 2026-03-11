@@ -213,29 +213,78 @@
             .modal-info h2 { font-size: 2.2rem; }
         }
         
-        /* --- AJUSTES DE PRECISIÓN RESPONSIVE --- */
+        /* --- AJUSTES EXCLUSIVOS DE RESPONSIVE (SOLO MÓVIL) --- */
         @media (max-width: 768px) {
             .title-big { font-size: 3rem; }
             .book-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
-            
-            /* Logo más chico en la pantalla de carga */
+
+            /* Achicar logo de carga */
             .loader-logo { height: 80px; }
             .loader-bar-container { width: 160px; }
 
-            /* Navbar: Fila 1 (Logo y Links), Fila 2 (Usuario) */
-            .navbar { flex-direction: row; flex-wrap: wrap; padding: 15px 20px; justify-content: space-between; height: auto; }
-            .navbar-logo img { height: 28px; }
-            .nav-links { gap: 15px; justify-content: flex-end; }
-            .nav-links a { font-size: 0.85rem; }
-            
-            #userNavMenu { width: 100%; justify-content: center; margin-top: 12px; }
-            .user-badge { width: auto; justify-content: center; }
+            /* NAVBAR - 1 SOLA FILA */
+            .navbar { 
+                flex-direction: row; 
+                flex-wrap: nowrap; 
+                padding: 10px 15px; 
+                gap: 10px; 
+            }
+            .navbar-logo img { height: 26px; }
+
+            .nav-links { 
+                flex: 1; 
+                flex-wrap: nowrap; 
+                justify-content: space-between; 
+                gap: 5px; 
+                margin: 0; 
+            }
+
+            /* Ocultar botón Inicio para ahorrar espacio */
+            #navLinks > li:nth-child(1) { display: none; }
+
+            /* Mover Biblioteca a la izquierda junto al logo */
+            #navLinks > li.dropdown { margin-right: auto; }
+            #navLinks > li.dropdown > a { font-size: 0.85rem; padding: 5px 0; }
+            #navLinks > li.dropdown > a > i { display: none; } /* Ocultar flechita */
+            .dropdown-content { left: 0; min-width: 150px; }
+
+            /* Menú de Usuario a la derecha */
+            #userNavMenu { margin-left: auto; }
+            #userNavMenu > div {
+                flex-wrap: nowrap !important;
+                gap: 8px !important;
+            }
+
+            /* Rango y Nombre */
+            .user-badge { 
+                order: 1; 
+                font-size: 0.7rem !important; 
+                padding: 5px 10px !important; 
+                white-space: nowrap; 
+                width: auto !important; 
+            }
+
+            /* Botón Dashboard: Solo llave roja estética */
+            .admin-panel-link { 
+                order: 2; 
+                font-size: 0 !important; /* Oculta el texto "Dashboard" */
+                padding: 6px 10px !important; 
+            }
+            .admin-panel-link i { font-size: 1.1rem; margin: 0; }
+
+            /* Botón de Cerrar Sesión (Ocultar texto "Salir") */
+            #userNavMenu a[onclick^="handleLogout"] { 
+                order: 3; 
+                font-size: 0 !important; 
+                text-decoration: none !important; 
+            }
+            #userNavMenu a[onclick^="handleLogout"] i { font-size: 1.1rem; }
         }
     </style>
 </head>
 <body id="appBody">
 
-    <!-- PANTALLA DE CARGA -->
+    <!-- PANTALLA DE CARGA (NUEVO) -->
     <div id="preloader">
         <img src="https://i.ibb.co/r1jmr8t/Pics-Art-12-04-08-42-09.png" alt="Aeonika Logo" class="loader-logo">
         <div class="loader-bar-container">
@@ -246,23 +295,20 @@
 
     <div id="loader"></div>
 
-    <!-- NAVBAR ESTRUCTURADO PARA FILAS -->
+    <!-- NAVBAR -->
     <nav class="navbar">
         <div class="navbar-logo"><img src="https://i.ibb.co/r1jmr8t/Pics-Art-12-04-08-42-09.png" alt="Logo"></div>
-        
         <ul class="nav-links" id="navLinks">
             <li><a href="#inicio">Inicio</a></li>
             <li class="dropdown">
-                <!-- Se quitó la flecha del botón de Biblioteca -->
-                <a href="#biblioteca">Biblioteca</a>
+                <a href="#">Biblioteca <i class="fas fa-chevron-down" style="font-size: 0.8em; margin-left: 4px;"></i></a>
                 <div class="dropdown-content" id="navDropdown"></div>
             </li>
+            <!-- BOTÓN DE USUARIO DINÁMICO -->
+            <li id="userNavMenu">
+                <a onclick="openAuthModal('login')" class="user-badge badge-lector"><i class="fas fa-user-circle"></i> Mi Cuenta</a>
+            </li>
         </ul>
-
-        <!-- El contenedor de usuario queda por fuera de los links para envolver a la línea de abajo -->
-        <div id="userNavMenu" style="display: flex; align-items: center;">
-            <a onclick="openAuthModal('login')" class="user-badge badge-lector" style="cursor: pointer;"><i class="fas fa-user-circle"></i> Mi Cuenta</a>
-        </div>
     </nav>
 
     <!-- VISTA PÚBLICA -->
@@ -309,7 +355,7 @@
         </div>
     </div>
 
-    <!-- MODAL DE AUTENTICACIÓN DINÁMICO (CON FORMULARIOS PARA "ENTER") -->
+    <!-- MODAL DE AUTENTICACIÓN DINÁMICO -->
     <div id="authModalOverlay" class="book-modal-overlay" onclick="if(event.target === this) closeAuthModal()">
         <div class="book-modal-content auth-box">
             <button class="close-modal" onclick="closeAuthModal()" style="top: 10px; right: 10px; background: rgba(0,0,0,0.8);"><i class="fas fa-times"></i></button>
@@ -320,25 +366,25 @@
             </div>
 
             <div class="auth-form-container">
-                <!-- Formulario de Login adaptado -->
-                <form id="form-login" class="auth-form active" onsubmit="event.preventDefault(); handleLogin();">
+                <!-- Formulario de Login -->
+                <div id="form-login" class="auth-form active">
                     <h2>Bienvenido de vuelta</h2>
                     <p class="sub">Accede a tu biblioteca personal y contenido desbloqueado.</p>
-                    <input type="email" id="loginEmail" placeholder="Correo Electrónico" required>
-                    <input type="password" id="loginPass" placeholder="Contraseña Secreta" required>
-                    <button type="submit" class="auth-btn">INICIAR SESIÓN</button>
+                    <input type="email" id="loginEmail" placeholder="Correo Electrónico">
+                    <input type="password" id="loginPass" placeholder="Contraseña Secreta">
+                    <button onclick="handleLogin()" class="auth-btn">INICIAR SESIÓN</button>
                     <p id="loginMsg" style="color: var(--neon-red); font-size: 0.8rem; margin-top: 15px; text-align: center;"></p>
-                </form>
+                </div>
 
-                <!-- Formulario de Registro adaptado -->
-                <form id="form-register" class="auth-form" onsubmit="event.preventDefault(); handleRegister();">
+                <!-- Formulario de Registro -->
+                <div id="form-register" class="auth-form">
                     <h2>Inicia tu Camino</h2>
                     <p class="sub">Únete al archivo y adquiere sabiduría oculta.</p>
-                    <input type="email" id="regEmail" placeholder="Correo Electrónico" required>
-                    <input type="password" id="regPass" placeholder="Crea una Contraseña (Min 6)" required>
-                    <button type="submit" class="auth-btn" style="background: var(--neon-gold);">REGISTRARME AHORA</button>
+                    <input type="email" id="regEmail" placeholder="Correo Electrónico">
+                    <input type="password" id="regPass" placeholder="Crea una Contraseña (Min 6)">
+                    <button onclick="handleRegister()" class="auth-btn" style="background: var(--neon-gold);">REGISTRARME AHORA</button>
                     <p id="regMsg" style="color: var(--neon-gold); font-size: 0.8rem; margin-top: 15px; text-align: center;"></p>
-                </form>
+                </div>
             </div>
         </div>
     </div>
@@ -394,9 +440,10 @@
 
             await refreshData();
             
-            // OCULTAR PRELOADER
+            // Ocultar preloader después de cargar datos
             setTimeout(() => {
-                document.getElementById('preloader').classList.add('hidden');
+                const preloader = document.getElementById('preloader');
+                if(preloader) preloader.classList.add('hidden');
             }, 800);
         });
 
@@ -436,6 +483,7 @@
                 let roleName = 'Lector';
                 let adminButton = '';
 
+                // Jerarquías visuales
                 if (userProfile.es_master) {
                     badgeClass = 'badge-master'; 
                     icon = '<i class="fas fa-crown"></i>'; 
@@ -451,7 +499,7 @@
                 }
 
                 nav.innerHTML = `
-                    <div style="display: flex; gap: 12px; align-items: center; justify-content: center; flex-wrap: wrap; width: 100%;">
+                    <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
                         ${adminButton}
                         <span class="user-badge ${badgeClass}" title="Tu Rango">
                             ${icon} ${roleName} | ${shortEmail}
@@ -460,7 +508,7 @@
                     </div>
                 `;
             } else {
-                nav.innerHTML = `<a onclick="openAuthModal('login')" class="user-badge badge-lector" style="cursor: pointer;"><i class="fas fa-user-circle"></i> Mi Cuenta</a>`;
+                nav.innerHTML = `<a onclick="openAuthModal('login')" class="user-badge badge-lector"><i class="fas fa-user-circle"></i> Iniciar Sesión</a>`;
             }
         }
 
@@ -484,6 +532,14 @@
             document.getElementById(`tab-${tab}`).classList.add('active');
             document.getElementById(`form-${tab}`).classList.add('active');
         }
+
+        // Event Listeners para tecla ENTER añadidos a los divs existentes
+        document.getElementById('loginPass').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') handleLogin();
+        });
+        document.getElementById('regPass').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') handleRegister();
+        });
 
         async function handleLogin() {
             const email = document.getElementById('loginEmail').value;
