@@ -215,9 +215,23 @@
         @media (max-width: 768px) {
             .title-big { font-size: 3rem; }
             .book-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
-            .navbar { flex-direction: column; gap: 15px; }
-            .nav-links { justify-content: center; }
-            .user-badge { width: 100%; justify-content: center; }
+            
+            /* Navbar alineado horizontalmente */
+            .navbar { flex-direction: row; flex-wrap: nowrap; padding: 10px 15px; gap: 10px; }
+            .navbar-logo img { height: 26px; }
+            .nav-links { flex-wrap: nowrap; gap: 12px; justify-content: flex-end; width: auto; flex: 1; }
+            .nav-links a { font-size: 0.8rem; }
+            
+            /* Logo de carga más pequeño en móvil */
+            .loader-logo { height: 75px; }
+            
+            /* Iconos puros para el área de usuario (ahorra espacio) */
+            .user-badge { font-size: 0; padding: 6px 10px; }
+            .user-badge i { font-size: 1.1rem; margin: 0; }
+            .admin-panel-link { font-size: 0; padding: 6px 10px; gap: 0; }
+            .admin-panel-link i { font-size: 1.1rem; margin: 0; }
+            #userNavMenu div a[onclick] { font-size: 0 !important; }
+            #userNavMenu div a[onclick] i { font-size: 1.1rem; }
         }
     </style>
 </head>
@@ -305,25 +319,25 @@
             </div>
 
             <div class="auth-form-container">
-                <!-- Formulario de Login -->
-                <div id="form-login" class="auth-form active">
+                <!-- Formulario de Login adaptado para "Enter" -->
+                <form id="form-login" class="auth-form active" onsubmit="event.preventDefault(); handleLogin();">
                     <h2>Bienvenido de vuelta</h2>
                     <p class="sub">Accede a tu biblioteca personal y contenido desbloqueado.</p>
-                    <input type="email" id="loginEmail" placeholder="Correo Electrónico">
-                    <input type="password" id="loginPass" placeholder="Contraseña Secreta">
-                    <button onclick="handleLogin()" class="auth-btn">INICIAR SESIÓN</button>
+                    <input type="email" id="loginEmail" placeholder="Correo Electrónico" required>
+                    <input type="password" id="loginPass" placeholder="Contraseña Secreta" required>
+                    <button type="submit" class="auth-btn">INICIAR SESIÓN</button>
                     <p id="loginMsg" style="color: var(--neon-red); font-size: 0.8rem; margin-top: 15px; text-align: center;"></p>
-                </div>
+                </form>
 
-                <!-- Formulario de Registro -->
-                <div id="form-register" class="auth-form">
+                <!-- Formulario de Registro adaptado para "Enter" -->
+                <form id="form-register" class="auth-form" onsubmit="event.preventDefault(); handleRegister();">
                     <h2>Inicia tu Camino</h2>
                     <p class="sub">Únete al archivo y adquiere sabiduría oculta.</p>
-                    <input type="email" id="regEmail" placeholder="Correo Electrónico">
-                    <input type="password" id="regPass" placeholder="Crea una Contraseña (Min 6)">
-                    <button onclick="handleRegister()" class="auth-btn" style="background: var(--neon-gold);">REGISTRARME AHORA</button>
+                    <input type="email" id="regEmail" placeholder="Correo Electrónico" required>
+                    <input type="password" id="regPass" placeholder="Crea una Contraseña (Min 6)" required>
+                    <button type="submit" class="auth-btn" style="background: var(--neon-gold);">REGISTRARME AHORA</button>
                     <p id="regMsg" style="color: var(--neon-gold); font-size: 0.8rem; margin-top: 15px; text-align: center;"></p>
-                </div>
+                </form>
             </div>
         </div>
     </div>
