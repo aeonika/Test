@@ -23,6 +23,27 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Poppins', sans-serif; background-color: var(--bg-color); color: var(--text-main); min-height: 100vh; background: radial-gradient(circle, #1a1a2e, #000); overflow-x: hidden; }
 
+        /* --- PANTALLA DE CARGA (NUEVO) --- */
+        #preloader {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle, #0a0a1a, #050508);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            z-index: 10000; transition: opacity 0.8s ease, visibility 0.8s;
+        }
+        #preloader.hidden { opacity: 0; visibility: hidden; }
+        .loader-logo { height: 120px; filter: drop-shadow(0 0 20px var(--neon-blue)); animation: pulseLogo 2s infinite ease-in-out; }
+        .loader-bar-container { width: 200px; height: 2px; background: rgba(255,255,255,0.05); margin-top: 30px; border-radius: 10px; overflow: hidden; position: relative; }
+        .loader-bar { width: 100%; height: 100%; background: var(--neon-blue); box-shadow: 0 0 10px var(--neon-blue); animation: loadingProgress 2s infinite ease-in-out; }
+        
+        @keyframes pulseLogo { 
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.05); opacity: 1; }
+        }
+        @keyframes loadingProgress {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
         /* --- NAVBAR --- */
         .navbar { width: 100%; background-color: #1a1a1a; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--neon-blue); box-shadow: 0 0 15px rgba(0, 170, 255, 0.4); position: sticky; top: 0; z-index: 1000; }
         .navbar-logo img { height: 40px; filter: drop-shadow(0 0 5px var(--neon-blue)); }
@@ -166,8 +187,8 @@
         .auth-btn { width: 100%; padding: 14px; background: var(--neon-blue); color: #000; font-weight: 800; border: none; border-radius: 12px; cursor: pointer; transition: 0.3s; font-family: inherit; font-size: 1rem; }
         .auth-btn:hover { box-shadow: 0 0 20px var(--neon-blue-glow); transform: translateY(-2px); }
 
-        /* --- LOADER --- */
-        #loader { position: fixed; top: 0; left: 0; width: 100%; height: 3px; background: var(--neon-blue); z-index: 10000; display: none; }
+        /* --- LOADER SECUNDARIO --- */
+        #loader { position: fixed; top: 0; left: 0; width: 100%; height: 3px; background: var(--neon-blue); z-index: 10001; display: none; }
 
         /* --- FOOTER COMPLETO --- */
         .footer { background-color: #0a0a0f; padding: 60px 20px 20px; border-top: 1px solid rgba(0, 170, 255, 0.2); margin-top: 80px; }
@@ -201,6 +222,15 @@
     </style>
 </head>
 <body id="appBody">
+
+    <!-- PANTALLA DE CARGA -->
+    <div id="preloader">
+        <img src="https://i.ibb.co/r1jmr8t/Pics-Art-12-04-08-42-09.png" alt="Aeonika Logo" class="loader-logo">
+        <div class="loader-bar-container">
+            <div class="loader-bar"></div>
+        </div>
+        <p style="color: var(--neon-blue); font-size: 10px; letter-spacing: 5px; margin-top: 20px; font-weight: 900; opacity: 0.6; text-transform: uppercase;">Sincronizando Archivo</p>
+    </div>
 
     <div id="loader"></div>
 
@@ -348,6 +378,11 @@
             });
 
             await refreshData();
+            
+            // OCULTAR PRELOADER (AQUÍ ESTÁ EL CIERRE DEL SPLASH)
+            setTimeout(() => {
+                document.getElementById('preloader').classList.add('hidden');
+            }, 800);
         });
 
         // --- SISTEMA DE USUARIOS PÚBLICOS ---
@@ -465,12 +500,10 @@
 
         // --- CARGA DE CATÁLOGO ---
         async function refreshData() {
-            showLoader(true);
             const { data: cats } = await sb.from('categorias').select('*').order('orden');
             const { data: books } = await sb.from('libros').select('*').order('created_at', { ascending: false });
             catsData = cats || []; booksData = books || [];
             renderPublicLibrary();
-            showLoader(false);
         }
 
         // --- RENDERIZADO DE TARJETAS ---
