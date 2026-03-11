@@ -4,249 +4,199 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Biblioteca Aeonika | Magia del Caos</title>
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;900&display=swap" rel="stylesheet">
-    <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
         /* --- VARIABLES Y ESTÉTICA ORIGINAL --- */
         :root {
-            --bg-color: #050508;
-            --surface-color: rgba(20, 20, 25, 0.8);
-            --neon-blue: #00aaff;
-            --neon-blue-glow: rgba(0, 170, 255, 0.5);
-            --text-main: #ffffff;
-            --text-muted: #a0a0a0;
+            --bg-color: #050508; --surface-color: rgba(20, 20, 25, 0.8);
+            --neon-blue: #00aaff; --neon-blue-glow: rgba(0, 170, 255, 0.5);
+            --neon-gold: #ffd700; --neon-gold-glow: rgba(255, 215, 0, 0.6);
+            --neon-red: #ff3366; --neon-red-glow: rgba(255, 51, 102, 0.6);
+            --neon-purple: #b026ff; --neon-purple-glow: rgba(176, 38, 255, 0.6);
+            --text-main: #ffffff; --text-muted: #a0a0a0;
         }
 
         html { scroll-behavior: smooth; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; background-color: var(--bg-color); color: var(--text-main); min-height: 100vh; background: radial-gradient(circle, #1a1a2e, #000); overflow-x: hidden; }
 
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            min-height: 100vh;
-            background: radial-gradient(circle, #1a1a2e, #000);
-            overflow-x: hidden;
-        }
-
-        .neon-text { color: var(--neon-blue); text-shadow: 0 0 10px var(--neon-blue-glow); }
-        .glass-panel { background: var(--surface-color); backdrop-filter: blur(12px); border: 1px solid rgba(0, 170, 255, 0.1); }
-
-        /* --- NAVBAR ORIGINAL MODIFICADO --- */
-        .navbar {
-            width: 100%; background-color: #1a1a1a; padding: 10px 20px;
-            display: flex; justify-content: space-between; align-items: center;
-            border-bottom: 2px solid var(--neon-blue);
-            box-shadow: 0 0 15px rgba(0, 170, 255, 0.4);
-            position: sticky; top: 0; z-index: 1000;
-        }
+        /* --- NAVBAR --- */
+        .navbar { width: 100%; background-color: #1a1a1a; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--neon-blue); box-shadow: 0 0 15px rgba(0, 170, 255, 0.4); position: sticky; top: 0; z-index: 1000; }
         .navbar-logo img { height: 40px; filter: drop-shadow(0 0 5px var(--neon-blue)); }
         .nav-links { display: flex; gap: 20px; list-style: none; align-items: center; flex-wrap: wrap; }
-        .nav-links a { color: var(--neon-blue); text-decoration: none; font-size: 0.9rem; font-weight: 600; transition: 0.3s; }
+        .nav-links a { color: var(--neon-blue); text-decoration: none; font-size: 0.9rem; font-weight: 600; transition: 0.3s; cursor: pointer; }
         .nav-links a:hover { text-shadow: 0 0 10px var(--neon-blue); }
 
-        /* Dropdown Estilo Original */
         .dropdown { position: relative; }
-        .dropdown-content {
-            display: none; position: absolute; background-color: #1a1a1a;
-            min-width: 200px; box-shadow: 0px 8px 16px rgba(0,0,0,0.5);
-            z-index: 1; top: 100%; left: 0; border: 1px solid var(--neon-blue);
-        }
+        .dropdown-content { display: none; position: absolute; background-color: #1a1a1a; min-width: 200px; box-shadow: 0px 8px 16px rgba(0,0,0,0.5); z-index: 1; top: 100%; left: 0; border: 1px solid var(--neon-blue); }
         .dropdown:hover .dropdown-content { display: block; }
         .dropdown-content a { padding: 12px 16px; display: block; border-bottom: 1px solid #333; }
         .dropdown-content a:hover { background-color: #333; }
 
-        /* --- HERO SECTION ORIGINAL --- */
-        .hero {
-            position: relative; width: 100%; height: 400px;
-            background-image: url('https://i.ibb.co/LzX1LPK8/arecut.png');
-            background-size: cover; background-position: center top;
-            display: flex; align-items: center; justify-content: center; text-align: center;
-        }
-        .hero-overlay { position: absolute; inset: 0; background-color: rgba(0, 0, 0, 0.5); }
-        .hero-content { position: relative; z-index: 2; max-width: 800px; padding: 20px; }
-        
-        /* --- TÍTULO ANIMADO Y VISUAL --- */
-        .main-title { display: flex; flex-direction: column; align-items: center; margin-bottom: 25px; line-height: 1; }
-        .title-small { font-size: 1.5rem; font-weight: 300; letter-spacing: 10px; color: #e0e0e0; text-transform: uppercase; margin-bottom: 5px; text-shadow: 0 2px 5px rgba(0,0,0,0.8); }
-        .title-big {
-            font-size: 5.5rem;
+        /* ETIQUETAS DE USUARIO EN NAVBAR */
+        .user-badge { display: flex; align-items: center; gap: 8px; padding: 6px 15px; border-radius: 20px; font-size: 0.85rem; font-weight: 700; transition: 0.3s; cursor: pointer; border: 1px solid transparent; background: rgba(255,255,255,0.05); }
+        .badge-master { color: var(--neon-purple); border-color: var(--neon-purple); box-shadow: 0 0 10px var(--neon-purple-glow); }
+        .badge-admin { color: var(--neon-red); border-color: var(--neon-red); box-shadow: 0 0 10px var(--neon-red-glow); }
+        .badge-vip { color: var(--neon-gold); border-color: var(--neon-gold); box-shadow: 0 0 10px var(--neon-gold-glow); }
+        .badge-lector { color: var(--text-main); border-color: rgba(255,255,255,0.2); }
+        .user-badge:hover { transform: translateY(-2px); filter: brightness(1.2); }
+
+        /* BOTÓN DE PANEL ADMIN */
+        .admin-panel-link {
+            padding: 6px 12px;
+            background: rgba(255, 51, 102, 0.1);
+            border: 1px solid var(--neon-red);
+            color: var(--neon-red);
+            border-radius: 8px;
+            font-size: 0.75rem;
             font-weight: 900;
             text-transform: uppercase;
-            letter-spacing: 2px;
-            background: linear-gradient(to right, #ffffff 10%, var(--neon-blue) 50%, #ffffff 90%);
-            background-size: 200% auto;
-            color: transparent;
-            -webkit-background-clip: text;
-            background-clip: text;
-            animation: textShine 4s linear infinite;
-            filter: drop-shadow(0 0 20px rgba(0, 170, 255, 0.6));
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: 0.3s;
+        }
+        .admin-panel-link:hover {
+            background: var(--neon-red);
+            color: #000;
+            box-shadow: 0 0 15px var(--neon-red-glow);
         }
 
+        /* --- HERO SECTION --- */
+        .hero { position: relative; width: 100%; height: 400px; background-image: url('https://i.ibb.co/LzX1LPK8/arecut.png'); background-size: cover; background-position: center top; display: flex; align-items: center; justify-content: center; text-align: center; }
+        .hero-overlay { position: absolute; inset: 0; background-color: rgba(0, 0, 0, 0.5); }
+        .hero-content { position: relative; z-index: 2; max-width: 800px; padding: 20px; }
+        .main-title { display: flex; flex-direction: column; align-items: center; margin-bottom: 25px; line-height: 1; }
+        .title-small { font-size: 1.5rem; font-weight: 300; letter-spacing: 10px; color: #e0e0e0; text-transform: uppercase; margin-bottom: 5px; text-shadow: 0 2px 5px rgba(0,0,0,0.8); }
+        .title-big { font-size: 5.5rem; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; background: linear-gradient(to right, #ffffff 10%, var(--neon-blue) 50%, #ffffff 90%); background-size: 200% auto; color: transparent; -webkit-background-clip: text; background-clip: text; animation: textShine 4s linear infinite; filter: drop-shadow(0 0 20px rgba(0, 170, 255, 0.6)); }
         @keyframes textShine { to { background-position: 200% center; } }
 
-        .hero-button {
-            padding: 12px 25px; background-color: var(--neon-blue); color: #000;
-            text-decoration: none; border-radius: 25px; font-weight: bold;
-            transition: 0.3s; display: inline-block;
+        /* BOTÓN DEL HERO Y TEXTO DE BIENVENIDA (ACTUALIZADO PARA SORTEO VIP) */
+        .hero-button { 
+            padding: 15px 35px; 
+            background: linear-gradient(45deg, var(--neon-gold), #ffea00); 
+            color: #000; 
+            text-decoration: none; 
+            border-radius: 30px; 
+            font-weight: 900; 
+            font-size: 1.1rem;
+            transition: 0.3s; 
+            display: inline-block; 
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+            border: 2px solid transparent;
+            cursor: pointer;
         }
-        .hero-button:hover { box-shadow: 0 0 20px var(--neon-blue); transform: scale(1.05); }
-
-        /* --- MENSAJE DE BIENVENIDA --- */
+        .hero-button:hover { 
+            box-shadow: 0 0 30px var(--neon-gold-glow); 
+            transform: scale(1.05); 
+            background: #000;
+            color: var(--neon-gold);
+            border-color: var(--neon-gold);
+        }
+        .hero-button i { margin-right: 8px; }
+        
         .welcome-message { text-align: center; margin: 40px 0; padding: 0 20px; }
         .welcome-message p { font-size: 1.2rem; color: var(--neon-blue); text-shadow: 0 0 10px var(--neon-blue); }
 
-        /* --- BOTONERA FLOTANTE ORIGINAL --- */
-        .floating-social-buttons { position: fixed; bottom: 20px; right: 20px; display: flex; flex-direction: column; align-items: flex-end; gap: 10px; z-index: 1000; }
-        .floating-button { width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 1.5rem; text-decoration: none; transition: 0.3s; }
-        .floating-button:hover { transform: translateY(-5px); box-shadow: 0 0 15px var(--neon-blue); }
-        .instagram { background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fd5949 45%, #d6249f 60%, #285AEB 90%); }
-        .facebook { background-color: #3b5998; }
-        .whatsapp { background-color: #25D366; }
-
-        /* --- CONTENEDORES DE LIBROS Y NUEVAS TARJETAS --- */
+        /* --- CONTENEDORES DE LIBROS --- */
         .container { max-width: 1300px; margin: 0 auto; padding: 20px; }
         .category-title { text-align: center; color: var(--neon-blue); text-shadow: 0 0 10px var(--neon-blue); margin: 50px 0 30px; font-size: 1.8rem; text-transform: uppercase; }
         .book-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 30px; }
         
-        .book-card { 
-            background: rgba(20, 20, 25, 0.6); 
-            border: 1px solid rgba(0, 170, 255, 0.15); 
-            border-radius: 16px; 
-            transition: all 0.4s ease; 
-            position: relative; 
-            overflow: hidden;
-            display: flex; 
-            flex-direction: column;
-            cursor: pointer;
-        }
-        .book-card:hover { 
-            transform: translateY(-8px); 
-            box-shadow: 0 15px 30px rgba(0, 170, 255, 0.2); 
-            border-color: var(--neon-blue);
-        }
-        .book-cover-container {
-            width: 100%;
-            padding-top: 145%;
-            position: relative;
-            overflow: hidden;
-            background: #000;
-        }
-        .book-cover-container img {
-            position: absolute; top: 0; left: 0;
-            width: 100%; height: 100%; object-fit: cover;
-            transition: transform 0.5s ease;
-        }
+        .book-card { background: rgba(20, 20, 25, 0.6); border: 1px solid rgba(0, 170, 255, 0.15); border-radius: 16px; transition: all 0.4s ease; position: relative; overflow: hidden; display: flex; flex-direction: column; cursor: pointer; }
+        .book-card:hover { transform: translateY(-8px); box-shadow: 0 15px 30px rgba(0, 170, 255, 0.2); border-color: var(--neon-blue); }
+        .book-card.premium-card { border-color: rgba(255, 215, 0, 0.3); }
+        .book-card.premium-card:hover { box-shadow: 0 15px 30px var(--neon-gold-glow); border-color: var(--neon-gold); }
+
+        .book-cover-container { width: 100%; padding-top: 145%; position: relative; overflow: hidden; background: #000; }
+        .book-cover-container img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
         .book-card:hover .book-cover-container img { transform: scale(1.08); }
         
-        /* ETIQUETA ELEGANTE PARA AUDIOLIBROS */
-        .audiobook-badge {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            background: rgba(0, 0, 0, 0.75);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            color: var(--neon-blue);
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 0.7rem;
-            font-weight: 700;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            border: 1px solid rgba(0, 170, 255, 0.3);
-            z-index: 5;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-        }
+        /* ETIQUETAS */
+        .audiobook-badge, .premium-badge { position: absolute; backdrop-filter: blur(8px); padding: 6px 12px; border-radius: 20px; font-size: 0.7rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; display: flex; align-items: center; gap: 6px; z-index: 5; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); }
+        .audiobook-badge { top: 12px; right: 12px; background: rgba(0, 0, 0, 0.75); color: var(--neon-blue); border: 1px solid rgba(0, 170, 255, 0.3); }
+        .premium-badge { bottom: 12px; left: 12px; background: rgba(0, 0, 0, 0.85); color: var(--neon-gold); border: 1px solid var(--neon-gold); }
 
         .book-info { padding: 20px; display: flex; flex-direction: column; flex-grow: 1; }
-        .book-card h3 { 
-            font-size: 1.1rem; color: #fff; margin-bottom: 10px; line-height: 1.3;
-            display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
-        }
-        .book-card p { 
-            font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;
-            display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
-        }
-        .book-read-more {
-            margin-top: auto; color: var(--neon-blue); font-size: 0.8rem; font-weight: 700; 
-            text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 5px;
-        }
+        .book-card h3 { font-size: 1.1rem; color: #fff; margin-bottom: 10px; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .book-card p { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .book-read-more { margin-top: auto; color: var(--neon-blue); font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 5px; }
 
-        /* --- MODAL (VENTANA EXTENDIDA DEL LIBRO) --- */
-        .book-modal-overlay {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px);
-            z-index: 9999; display: flex; align-items: center; justify-content: center;
-            opacity: 0; visibility: hidden; transition: 0.3s ease; padding: 20px;
-        }
+        /* --- MODAL DEL LIBRO --- */
+        .book-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); z-index: 9999; display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: 0.3s ease; padding: 20px; }
         .book-modal-overlay.active { opacity: 1; visibility: visible; }
-        .book-modal-content {
-            background: var(--bg-color); border: 1px solid rgba(0, 170, 255, 0.3); border-radius: 24px;
-            max-width: 900px; width: 100%; display: flex; flex-direction: column; overflow: hidden;
-            position: relative; transform: scale(0.95); transition: 0.3s ease;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.8), 0 0 30px rgba(0, 170, 255, 0.1); max-height: 90vh; overflow-y: auto;
-        }
+        .book-modal-content { background: var(--bg-color); border: 1px solid rgba(0, 170, 255, 0.3); border-radius: 24px; max-width: 900px; width: 100%; display: flex; flex-direction: column; overflow: hidden; position: relative; transform: scale(0.95); transition: 0.3s ease; box-shadow: 0 25px 50px rgba(0,0,0,0.8); max-height: 90vh; overflow-y: auto; }
         .book-modal-overlay.active .book-modal-content { transform: scale(1); }
-        .close-modal {
-            position: absolute; top: 15px; right: 15px; background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.1);
-            color: #fff; font-size: 1.2rem; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; z-index: 10; 
-            display: flex; align-items: center; justify-content: center; transition: 0.3s;
-        }
+        .close-modal { position: absolute; top: 15px; right: 15px; background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.1); color: #fff; font-size: 1.2rem; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; z-index: 10; display: flex; align-items: center; justify-content: center; transition: 0.3s; }
         .close-modal:hover { background: var(--neon-blue); color: #000; transform: rotate(90deg); }
-        
         .modal-body { display: flex; flex-direction: column; }
         .modal-img-container { width: 100%; height: 350px; position: relative; }
         .modal-img-container img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
         .modal-info { padding: 30px; display: flex; flex-direction: column; justify-content: center; }
         .modal-info h2 { font-size: 1.8rem; color: #fff; margin-bottom: 15px; line-height: 1.2; }
         .modal-info p { color: var(--text-muted); line-height: 1.6; font-size: 1rem; margin-bottom: 30px; }
-        .modal-info .btn-download {
-            display: inline-flex; align-items: center; justify-content: center; gap: 10px;
-            padding: 15px 30px; background: var(--neon-blue); color: #000;
-            text-decoration: none; border-radius: 30px; font-weight: bold; font-size: 1rem;
-            transition: 0.3s; width: fit-content;
-        }
-        .modal-info .btn-download:hover { box-shadow: 0 0 25px var(--neon-blue-glow); transform: translateY(-2px); }
+        
+        .btn-download { display: inline-flex; align-items: center; justify-content: center; gap: 10px; padding: 15px 30px; background: var(--neon-blue); color: #000; text-decoration: none; border-radius: 30px; font-weight: bold; font-size: 1rem; transition: 0.3s; width: fit-content; }
+        .btn-download:hover { box-shadow: 0 0 25px var(--neon-blue-glow); transform: translateY(-2px); }
+        
+        .btn-premium-lock { background: var(--bg-color); color: var(--neon-gold); border: 2px solid var(--neon-gold); }
+        .btn-premium-lock:hover { background: var(--neon-gold); color: #000; box-shadow: 0 0 25px var(--neon-gold-glow); }
 
-        /* --- BANNERS --- */
-        .banner { width: 100%; max-width: 600px; margin: 40px auto; text-align: center; }
-        .banner img { width: 100%; border-radius: 10px; filter: drop-shadow(0 0 10px var(--neon-blue)); transition: 0.3s; }
-        .banner img:hover { transform: scale(1.02); filter: drop-shadow(0 0 20px var(--neon-blue)); }
+        /* --- AUTH MODAL DINÁMICO --- */
+        .auth-box { max-width: 420px; padding: 0; background: var(--bg-card); overflow: hidden; }
+        .auth-tabs { display: flex; border-bottom: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.5); }
+        .auth-tab { flex: 1; padding: 20px; text-align: center; background: none; border: none; color: var(--text-muted); font-family: 'Poppins'; font-weight: 600; font-size: 1rem; cursor: pointer; transition: 0.3s; }
+        .auth-tab.active { color: var(--neon-blue); background: rgba(0, 170, 255, 0.05); border-bottom: 2px solid var(--neon-blue); }
+        
+        .auth-form-container { padding: 40px 30px; }
+        .auth-form { display: none; flex-direction: column; animation: fadeIn 0.4s ease; }
+        .auth-form.active { display: flex; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .auth-form h2 { margin-bottom: 10px; color: #fff; }
+        .auth-form p.sub { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 25px; }
+        .auth-form input { width: 100%; padding: 14px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color: #fff; margin-bottom: 15px; outline: none; transition: 0.3s; font-family: inherit; }
+        .auth-form input:focus { border-color: var(--neon-blue); box-shadow: 0 0 10px rgba(0, 170, 255, 0.2); }
+        .auth-btn { width: 100%; padding: 14px; background: var(--neon-blue); color: #000; font-weight: 800; border: none; border-radius: 12px; cursor: pointer; transition: 0.3s; font-family: inherit; font-size: 1rem; }
+        .auth-btn:hover { box-shadow: 0 0 20px var(--neon-blue-glow); transform: translateY(-2px); }
 
         /* --- LOADER --- */
-        #loader { position: fixed; top: 0; left: 0; width: 100%; height: 3px; background: var(--neon-blue); z-index: 6000; display: none; }
+        #loader { position: fixed; top: 0; left: 0; width: 100%; height: 3px; background: var(--neon-blue); z-index: 10000; display: none; }
 
-        /* --- FOOTER ORIGINAL --- */
-        .footer { background-color: #1a1a1a; padding: 40px 20px; border-top: 2px solid var(--neon-blue); margin-top: 60px; text-align: center; }
-        .footer-logo img { width: 150px; margin-bottom: 20px; filter: drop-shadow(0 0 5px var(--neon-blue)); }
+        /* --- FOOTER COMPLETO --- */
+        .footer { background-color: #0a0a0f; padding: 60px 20px 20px; border-top: 1px solid rgba(0, 170, 255, 0.2); margin-top: 80px; }
+        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; max-width: 1200px; margin: 0 auto 40px; }
+        .footer-logo img { width: 160px; margin-bottom: 20px; filter: drop-shadow(0 0 10px var(--neon-blue)); }
+        .footer-desc { color: var(--text-muted); font-size: 0.9rem; line-height: 1.6; margin-bottom: 20px; }
+        
+        .social-row { display: flex; gap: 15px; }
+        .social-circle { width: 45px; height: 45px; border-radius: 50%; background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; color: #fff; text-decoration: none; transition: 0.3s; font-size: 1.2rem; border: 1px solid rgba(255,255,255,0.1); }
+        .social-circle:hover { background: var(--neon-blue); color: #000; box-shadow: 0 0 15px var(--neon-blue-glow); border-color: var(--neon-blue); transform: translateY(-3px); }
+        
+        .footer-links h4 { color: #fff; margin-bottom: 20px; font-size: 1.1rem; letter-spacing: 1px; text-transform: uppercase; }
+        .footer-links a { display: block; color: var(--text-muted); text-decoration: none; margin-bottom: 12px; transition: 0.3s; font-size: 0.9rem; }
+        .footer-links a:hover { color: var(--neon-blue); padding-left: 5px; }
+        
+        .footer-bottom { text-align: center; padding-top: 25px; border-top: 1px solid rgba(255,255,255,0.05); color: var(--text-muted); font-size: 0.85rem; }
 
         @media (min-width: 768px) {
             .modal-body { flex-direction: row; }
             .modal-img-container { width: 40%; height: auto; border-right: 1px solid rgba(255,255,255,0.05); }
-            .modal-img-container img { object-fit: cover; }
             .modal-info { width: 60%; padding: 50px; }
             .modal-info h2 { font-size: 2.2rem; }
         }
-
         @media (max-width: 768px) {
-            .title-small { font-size: 1rem; letter-spacing: 5px; }
             .title-big { font-size: 3rem; }
             .book-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
-            .book-card h3 { font-size: 0.95rem; }
-            .book-card p { font-size: 0.75rem; }
-
-            .navbar { flex-direction: column; gap: 15px; padding: 15px 10px; }
-            .nav-links { justify-content: center; gap: 15px; }
-            .nav-links a { font-size: 0.85rem; }
-            .dropdown-content { left: 50%; transform: translateX(-50%); text-align: center; min-width: 180px; }
+            .navbar { flex-direction: column; gap: 15px; }
+            .nav-links { justify-content: center; }
+            .user-badge { width: 100%; justify-content: center; }
         }
     </style>
 </head>
@@ -256,20 +206,17 @@
 
     <!-- NAVBAR -->
     <nav class="navbar">
-        <div class="navbar-logo">
-            <img src="https://i.ibb.co/r1jmr8t/Pics-Art-12-04-08-42-09.png" alt="Logo">
-        </div>
-        
+        <div class="navbar-logo"><img src="https://i.ibb.co/r1jmr8t/Pics-Art-12-04-08-42-09.png" alt="Logo"></div>
         <ul class="nav-links" id="navLinks">
             <li><a href="#inicio">Inicio</a></li>
             <li class="dropdown">
                 <a href="#">Biblioteca <i class="fas fa-chevron-down" style="font-size: 0.8em; margin-left: 4px;"></i></a>
-                <div class="dropdown-content" id="navDropdown">
-                    <!-- Se llenará dinámicamente con las categorías de Supabase -->
-                </div>
+                <div class="dropdown-content" id="navDropdown"></div>
             </li>
-            <li><a href="admin.html"><i class="fas fa-user-shield"></i> Moderación</a></li>
-            <li><a href="#">Apoyanos</a></li>
+            <!-- BOTÓN DE USUARIO DINÁMICO -->
+            <li id="userNavMenu">
+                <a onclick="openAuthModal('login')" class="user-badge badge-lector"><i class="fas fa-user-circle"></i> Mi Cuenta</a>
+            </li>
         </ul>
     </nav>
 
@@ -278,12 +225,13 @@
         <section class="hero" id="inicio">
             <div class="hero-overlay"></div>
             <div class="hero-content">
-                <h1 class="main-title">
-                    <span class="title-small">Biblioteca</span>
-                    <span class="title-big">Aeonika</span>
-                </h1>
-                <p style="margin-bottom: 20px; font-weight: 300; font-size: 1.1rem; color: #ccc;">¿Sos Nuevo?</p>
-                <a href="#biblioteca" class="hero-button">Primeros Pasos en Magia(k)</a>
+                <h1 class="main-title"><span class="title-small">Biblioteca</span><span class="title-big">Aeonika</span></h1>
+                <p style="margin-bottom: 25px; font-weight: 400; font-size: 1.2rem; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.8);">
+                    Regístrate ahora y participa mensualmente por <span style="color: var(--neon-gold); font-weight: 800;">Pases VIP Gratuitos</span>.
+                </p>
+                <a onclick="openAuthModal('register')" class="hero-button">
+                    <i class="fas fa-ticket-alt"></i> ¡CREAR CUENTA Y PARTICIPAR!
+                </a>
             </div>
         </section>
 
@@ -291,24 +239,15 @@
             <p>Bienvenido a nuestra Biblioteca Digital. Explora nuestra colección de libros clásicos y contemporáneos. ¡Encuentra tu próxima lectura favorita!</p>
         </div>
 
-        <div class="banner">
-            <a href="#"><img src="https://i.ibb.co/RGgB0XV9/Traducci-n-de-libros-1.png" alt="Banner"></a>
-        </div>
-
         <div class="container" id="biblioteca">
-            <!-- BUSCADOR -->
-            <div style="text-align: center; margin-bottom: 40px;">
+            <div style="text-align: center; margin-bottom: 40px; margin-top: 40px;">
                 <input type="text" id="searchInput" placeholder="Buscar libros, audiolibros..." style="padding: 12px 20px; width: 100%; max-width: 500px; border-radius: 25px; border: 2px solid var(--neon-blue); background: #1a1a1a; color: white; outline: none;" oninput="filterBooks()">
             </div>
-
-            <!-- CONTENEDORES DINÁMICOS -->
-            <div id="mainLibraryContent">
-                <!-- Aquí Supabase inyectará las secciones y libros -->
-            </div>
+            <div id="mainLibraryContent"></div>
         </div>
     </div>
 
-    <!-- MODAL DEL LIBRO (NUEVO) -->
+    <!-- MODAL DEL LIBRO -->
     <div id="bookModalOverlay" class="book-modal-overlay" onclick="if(event.target === this) closeBookModal()">
         <div class="book-modal-content">
             <button class="close-modal" onclick="closeBookModal()"><i class="fas fa-times"></i></button>
@@ -318,104 +257,263 @@
                 </div>
                 <div class="modal-info">
                     <h2 id="modalBookTitle">Título del Libro</h2>
-                    <p id="modalBookDesc">Descripción detallada del libro aparecerá aquí.</p>
-                    <a id="modalBookDownload" href="#" target="_blank" class="btn-download">
-                        <i class="fas fa-cloud-download-alt"></i> DESCARGAR TOMO
-                    </a>
+                    <p id="modalBookDesc">Descripción...</p>
+                    <div id="modalButtonContainer"></div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- BOTONERA FLOTANTE ORIGINAL -->
-    <div class="floating-social-buttons">
-        <a href="https://instagram.com/biblioteca.aeonika" target="_blank" class="floating-button instagram"><i class="fab fa-instagram"></i></a>
-        <a href="https://facebook.com/magiadelcaos333" target="_blank" class="floating-button facebook"><i class="fab fa-facebook"></i></a>
-        <a href="https://whatsapp.com" target="_blank" class="floating-button whatsapp"><i class="fab fa-whatsapp"></i></a>
+    <!-- MODAL DE AUTENTICACIÓN DINÁMICO -->
+    <div id="authModalOverlay" class="book-modal-overlay" onclick="if(event.target === this) closeAuthModal()">
+        <div class="book-modal-content auth-box">
+            <button class="close-modal" onclick="closeAuthModal()" style="top: 10px; right: 10px; background: rgba(0,0,0,0.8);"><i class="fas fa-times"></i></button>
+            
+            <div class="auth-tabs">
+                <button class="auth-tab active" id="tab-login" onclick="switchAuthTab('login')">Ingresar</button>
+                <button class="auth-tab" id="tab-register" onclick="switchAuthTab('register')">Nuevo Lector</button>
+            </div>
+
+            <div class="auth-form-container">
+                <!-- Formulario de Login -->
+                <div id="form-login" class="auth-form active">
+                    <h2>Bienvenido de vuelta</h2>
+                    <p class="sub">Accede a tu biblioteca personal y contenido desbloqueado.</p>
+                    <input type="email" id="loginEmail" placeholder="Correo Electrónico">
+                    <input type="password" id="loginPass" placeholder="Contraseña Secreta">
+                    <button onclick="handleLogin()" class="auth-btn">INICIAR SESIÓN</button>
+                    <p id="loginMsg" style="color: var(--neon-red); font-size: 0.8rem; margin-top: 15px; text-align: center;"></p>
+                </div>
+
+                <!-- Formulario de Registro -->
+                <div id="form-register" class="auth-form">
+                    <h2>Inicia tu Camino</h2>
+                    <p class="sub">Únete al archivo y adquiere sabiduría oculta.</p>
+                    <input type="email" id="regEmail" placeholder="Correo Electrónico">
+                    <input type="password" id="regPass" placeholder="Crea una Contraseña (Min 6)">
+                    <button onclick="handleRegister()" class="auth-btn" style="background: var(--neon-gold);">REGISTRARME AHORA</button>
+                    <p id="regMsg" style="color: var(--neon-gold); font-size: 0.8rem; margin-top: 15px; text-align: center;"></p>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- FOOTER ORIGINAL -->
+    <!-- FOOTER COMPLETO -->
     <footer class="footer">
-        <div class="footer-logo">
-            <img src="https://i.ibb.co/r1jmr8t/Pics-Art-12-04-08-42-09.png" alt="Logo">
+        <div class="footer-grid">
+            <div>
+                <div class="footer-logo"><img src="https://i.ibb.co/r1jmr8t/Pics-Art-12-04-08-42-09.png" alt="Logo"></div>
+                <p class="footer-desc">El repositorio definitivo de Magia del Caos, Ocultismo y Sabiduría Esotérica. Explora, aprende y transforma tu realidad.</p>
+                <div class="social-row">
+                    <a href="https://instagram.com/biblioteca.aeonika" target="_blank" class="social-circle"><i class="fab fa-instagram"></i></a>
+                    <a href="https://facebook.com/magiadelcaos333" target="_blank" class="social-circle"><i class="fab fa-facebook"></i></a>
+                    <a href="#" target="_blank" class="social-circle"><i class="fab fa-whatsapp"></i></a>
+                </div>
+            </div>
+            <div class="footer-links">
+                <h4>Accesos Rápidos</h4>
+                <a href="#inicio"><i class="fas fa-chevron-right" style="font-size:0.7em; color:var(--neon-blue);"></i> Inicio</a>
+                <a href="#biblioteca"><i class="fas fa-chevron-right" style="font-size:0.7em; color:var(--neon-blue);"></i> Catálogo Completo</a>
+                <a onclick="openAuthModal('login')" style="cursor:pointer;"><i class="fas fa-chevron-right" style="font-size:0.7em; color:var(--neon-blue);"></i> Portal de Usuarios</a>
+            </div>
+            <div class="footer-links">
+                <h4>Soporte y Contacto</h4>
+                <a href="#"><i class="fas fa-envelope" style="color:var(--neon-blue); margin-right:8px;"></i> admin@aeonika.online</a>
+                <a href="#"><i class="fas fa-shield-alt" style="color:var(--neon-blue); margin-right:8px;"></i> Privacidad y Seguridad</a>
+                <a href="#"><i class="fas fa-file-contract" style="color:var(--neon-blue); margin-right:8px;"></i> Términos de Uso</a>
+            </div>
         </div>
-        <p>©2025 Aeonika Biblioteca Magia del Caos. Administrador Kriz G.</p>
+        <div class="footer-bottom"><p>©2026 Aeonika Biblioteca Magia del Caos. Administrador Kriz G. Todos los derechos reservados.</p></div>
     </footer>
 
     <script>
-        // --- CONFIGURACIÓN SUPABASE ---
         const SUPABASE_URL = 'https://frtiwrvfvsfkaneikphy.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_w8yEF_sDOzeMM3vjOT3h5w_zHwE0lXc';
+        const ADMIN_WHATSAPP = "5491100000000"; // Reemplaza con tu número
 
         let sb;
         let booksData = [];
         let catsData = [];
+        let publicUser = null;
+        let userProfile = null;
 
         document.addEventListener('DOMContentLoaded', async () => {
             sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            const { data: { session } } = await sb.auth.getSession();
+            if (session) await setupUser(session.user);
+
+            sb.auth.onAuthStateChange(async (_event, session) => {
+                if (session) await setupUser(session.user);
+                else { publicUser = null; userProfile = null; updateNav(); }
+            });
+
             await refreshData();
         });
 
-        // --- CARGA DE DATOS PÚBLICOS ---
+        // --- SISTEMA DE USUARIOS PÚBLICOS ---
+        async function setupUser(user) {
+            publicUser = user;
+            await fetchUserProfile(); 
+            updateNav();
+        }
+
+        async function fetchUserProfile() {
+            if(!publicUser) return;
+            const { data } = await sb.from('perfiles').select('*').eq('id', publicUser.id).single();
+            userProfile = data;
+            
+            if(!userProfile) {
+                const newProfile = { id: publicUser.id, email: publicUser.email, es_admin: false, es_suscriptor: false, es_master: false, libros_desbloqueados: [] };
+                await sb.from('perfiles').insert([newProfile]);
+                userProfile = newProfile;
+            }
+        }
+
+        async function handleLogoutPublic() {
+            showLoader(true);
+            await sb.auth.signOut();
+            location.reload();
+        }
+
+        // --- RENDERIZADO VISUAL DE ROLES Y BOTÓN ADMIN ---
+        function updateNav() {
+            const nav = document.getElementById('userNavMenu');
+            if (publicUser && userProfile) {
+                const shortEmail = publicUser.email.split('@')[0];
+                
+                let badgeClass = 'badge-lector';
+                let icon = '<i class="fas fa-user"></i>';
+                let roleName = 'Lector';
+                let adminButton = '';
+
+                // Jerarquías visuales
+                if (userProfile.es_master) {
+                    badgeClass = 'badge-master'; 
+                    icon = '<i class="fas fa-crown"></i>'; 
+                    roleName = 'Supremo';
+                    adminButton = `<a href="admin.html" class="admin-panel-link" title="Panel Maestro"><i class="fas fa-key"></i> Dashboard</a>`;
+                } else if (userProfile.es_admin) {
+                    badgeClass = 'badge-admin'; 
+                    icon = '<i class="fas fa-shield-alt"></i>'; 
+                    roleName = 'Mod';
+                    adminButton = `<a href="admin.html" class="admin-panel-link" title="Panel Moderación"><i class="fas fa-lock-open"></i> Admin</a>`;
+                } else if (userProfile.es_suscriptor) {
+                    badgeClass = 'badge-vip'; icon = '<i class="fas fa-star"></i>'; roleName = 'VIP';
+                }
+
+                nav.innerHTML = `
+                    <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+                        ${adminButton}
+                        <span class="user-badge ${badgeClass}" title="Tu Rango">
+                            ${icon} ${roleName} | ${shortEmail}
+                        </span>
+                        <a onclick="handleLogoutPublic()" style="color: var(--text-muted); font-size: 0.8rem; text-decoration: underline; cursor: pointer;"><i class="fas fa-sign-out-alt"></i> Salir</a>
+                    </div>
+                `;
+            } else {
+                nav.innerHTML = `<a onclick="openAuthModal('login')" class="user-badge badge-lector"><i class="fas fa-user-circle"></i> Iniciar Sesión</a>`;
+            }
+        }
+
+        // --- FUNCIONES DEL MODAL DE AUTH ---
+        function openAuthModal(tab = 'login') { 
+            document.getElementById('authModalOverlay').classList.add('active'); 
+            switchAuthTab(tab);
+        }
+        function closeAuthModal() { 
+            document.getElementById('authModalOverlay').classList.remove('active'); 
+            document.getElementById('loginMsg').innerText = '';
+            document.getElementById('regMsg').innerText = '';
+        }
+
+        function switchAuthTab(tab) {
+            document.getElementById('tab-login').classList.remove('active');
+            document.getElementById('tab-register').classList.remove('active');
+            document.getElementById('form-login').classList.remove('active');
+            document.getElementById('form-register').classList.remove('active');
+
+            document.getElementById(`tab-${tab}`).classList.add('active');
+            document.getElementById(`form-${tab}`).classList.add('active');
+        }
+
+        async function handleLogin() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPass').value;
+            document.getElementById('loginMsg').innerText = "Conectando...";
+            showLoader(true);
+            const { error } = await sb.auth.signInWithPassword({ email, password });
+            showLoader(false);
+            if (error) document.getElementById('loginMsg').innerText = "Credenciales incorrectas.";
+            else closeAuthModal();
+        }
+
+        async function handleRegister() {
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPass').value;
+            if(password.length < 6) return document.getElementById('regMsg').innerText = "La contraseña debe tener al menos 6 caracteres.";
+            document.getElementById('regMsg').innerText = "Creando registro...";
+            showLoader(true);
+            const { error } = await sb.auth.signUp({ email, password });
+            showLoader(false);
+            if (error) document.getElementById('regMsg').innerText = "Error: " + error.message;
+            else { 
+                document.getElementById('regMsg').style.color = "var(--success)";
+                document.getElementById('regMsg').innerText = "¡Registro exitoso! Iniciando sesión...";
+                setTimeout(() => location.reload(), 1500);
+            }
+        }
+
+        // --- CARGA DE CATÁLOGO ---
         async function refreshData() {
             showLoader(true);
-            const { data: cats } = await sb.from('categorias').select('*').order('orden', { ascending: true }).order('created_at', { ascending: true });
+            const { data: cats } = await sb.from('categorias').select('*').order('orden');
             const { data: books } = await sb.from('libros').select('*').order('created_at', { ascending: false });
-            
-            catsData = cats || [];
-            booksData = books || [];
-
+            catsData = cats || []; booksData = books || [];
             renderPublicLibrary();
             showLoader(false);
         }
 
-        // --- RENDERIZADO PÚBLICO Y TARJETAS NUEVAS ---
+        // --- RENDERIZADO DE TARJETAS ---
         function renderPublicLibrary() {
             const container = document.getElementById('mainLibraryContent');
             const dropdown = document.getElementById('navDropdown');
-            container.innerHTML = '';
-            dropdown.innerHTML = '';
+            container.innerHTML = ''; dropdown.innerHTML = '';
 
             catsData.forEach(cat => {
                 dropdown.innerHTML += `<a href="#cat-${cat.slug}">${cat.nombre}</a>`;
-
                 const sectionBooks = booksData.filter(b => b.categoria_slug === cat.slug);
                 if (sectionBooks.length === 0) return;
 
                 const section = document.createElement('section');
                 section.id = `cat-${cat.slug}`;
-                section.innerHTML = `
-                    <h2 class="category-title">${cat.nombre}</h2>
-                    <div class="book-grid"></div>
-                `;
+                section.innerHTML = `<h2 class="category-title">${cat.nombre}</h2><div class="book-grid"></div>`;
                 container.appendChild(section);
 
                 const grid = section.querySelector('.book-grid');
                 sectionBooks.forEach(book => {
                     const card = document.createElement('div');
-                    card.className = 'book-card';
+                    card.className = `book-card ${book.es_premium ? 'premium-card' : ''}`;
                     
-                    // Añadimos "audiolibro" u "audio" a la búsqueda si lo es
                     let searchTitle = book.titulo.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
                     if (book.es_audiolibro) searchTitle += " audiolibro audio";
-                    
+                    if (book.es_premium) searchTitle += " premium";
                     card.setAttribute('data-title', searchTitle);
                     
-                    // Al hacer clic, abrimos el modal
                     card.addEventListener('click', () => openBookModal(book));
 
-                    // HTML de la etiqueta flotante si es audiolibro
-                    const badgeHTML = book.es_audiolibro ? `<div class="audiobook-badge"><i class="fas fa-headphones-alt"></i> Audio</div>` : '';
+                    const audioBadge = book.es_audiolibro ? `<div class="audiobook-badge"><i class="fas fa-headphones-alt"></i> Audio</div>` : '';
+                    const premiumBadge = book.es_premium ? `<div class="premium-badge"><i class="fas fa-star"></i> $${book.precio}</div>` : '';
 
                     card.innerHTML = `
                         <div class="book-cover-container">
-                            ${badgeHTML}
-                            <img src="${book.image_url || 'https://via.placeholder.com/300x450?text=Grimorio'}" alt="Portada de ${book.titulo}" loading="lazy">
+                            ${audioBadge}
+                            ${premiumBadge}
+                            <img src="${book.image_url || 'https://via.placeholder.com/300x450?text=Grimorio'}" loading="lazy">
                         </div>
                         <div class="book-info">
-                            <h3>${book.titulo}</h3>
+                            <h3 style="${book.es_premium ? 'color: var(--neon-gold);' : ''}">${book.titulo}</h3>
                             <p>${book.descripcion || 'Sin descripción disponible.'}</p>
-                            <div class="book-read-more"><i class="fas fa-eye"></i> Leer Sinopsis</div>
+                            <div class="book-read-more"><i class="fas fa-eye"></i> Ver Detalles</div>
                         </div>
                     `;
                     grid.appendChild(card);
@@ -423,53 +521,58 @@
             });
         }
 
-        // --- FUNCIONES DEL MODAL ---
-        function openBookModal(book) {
+        // --- LÓGICA DE BLOQUEO EN TIEMPO REAL ---
+        async function openBookModal(book) {
             document.getElementById('modalBookTitle').innerText = book.titulo;
-            document.getElementById('modalBookDesc').innerText = book.descripcion || 'Este tomo no cuenta con una descripción extendida en los registros actuales.';
+            document.getElementById('modalBookTitle').style.color = book.es_premium ? 'var(--neon-gold)' : '#fff';
+            document.getElementById('modalBookDesc').innerText = book.descripcion || 'Sin descripción extendida.';
             document.getElementById('modalBookImg').src = book.image_url || 'https://via.placeholder.com/300x450?text=Grimorio';
             
-            const downloadBtn = document.getElementById('modalBookDownload');
-            downloadBtn.href = book.download_url;
-            
-            // Cambiar estilo de botón si es audiolibro
-            if (book.es_audiolibro) {
-                downloadBtn.innerHTML = '<i class="fas fa-headphones-alt"></i> ESCUCHAR AUDIO';
-            } else {
-                downloadBtn.innerHTML = '<i class="fas fa-cloud-download-alt"></i> DESCARGAR TOMO';
-            }
-            
+            const btnContainer = document.getElementById('modalButtonContainer');
+            btnContainer.innerHTML = '<p style="color: var(--text-muted);"><i class="fas fa-spinner fa-spin"></i> Verificando accesos...</p>';
             document.getElementById('bookModalOverlay').classList.add('active');
-            document.body.style.overflow = 'hidden'; // Bloquear scroll de fondo
+            document.body.style.overflow = 'hidden'; 
+
+            await fetchUserProfile(); 
+            
+            let hasAccess = !book.es_premium; 
+            
+            if (book.es_premium && publicUser && userProfile) {
+                if (userProfile.es_master || userProfile.es_admin || userProfile.es_suscriptor || (userProfile.libros_desbloqueados && userProfile.libros_desbloqueados.includes(book.id))) {
+                    hasAccess = true;
+                }
+            }
+
+            if (hasAccess) {
+                const icon = book.es_audiolibro ? '<i class="fas fa-headphones-alt"></i> ESCUCHAR AUDIO' : '<i class="fas fa-cloud-download-alt"></i> DESCARGAR TOMO';
+                btnContainer.innerHTML = `<a href="${book.download_url}" target="_blank" class="btn-download">${icon}</a>`;
+            } else {
+                if(!publicUser) {
+                    btnContainer.innerHTML = `
+                        <p style="color: var(--danger); font-size: 0.85rem; margin-bottom: 10px;">Debes tener una cuenta para acceder a este material.</p>
+                        <a onclick="closeBookModal(); openAuthModal('login');" style="cursor: pointer;" class="btn-download btn-premium-lock"><i class="fas fa-lock"></i> INICIA SESIÓN PARA COMPRAR</a>
+                    `;
+                } else {
+                    const text = `Hola! Soy el usuario ${publicUser.email}. Quiero comprar el material premium: "${book.titulo}" por el precio de $${book.precio}.`;
+                    const wpLink = `https://api.whatsapp.com/send?phone=${ADMIN_WHATSAPP}&text=${encodeURIComponent(text)}`;
+                    
+                    btnContainer.innerHTML = `
+                        <p style="color: var(--neon-gold); font-size: 0.85rem; margin-bottom: 10px;"><i class="fas fa-star"></i> Contenido Exclusivo. Precio: $${book.precio}</p>
+                        <a href="${wpLink}" target="_blank" class="btn-download btn-premium-lock"><i class="fab fa-whatsapp"></i> COMPRAR AHORA</a>
+                    `;
+                }
+            }
         }
 
-        function closeBookModal() {
-            document.getElementById('bookModalOverlay').classList.remove('active');
-            document.body.style.overflow = ''; // Restaurar scroll
-        }
-
-        // --- UTILIDADES ---
-        function filterBooks() {
+        function closeBookModal() { document.getElementById('bookModalOverlay').classList.remove('active'); document.body.style.overflow = ''; }
+        
+        function filterBooks() { 
             const term = document.getElementById('searchInput').value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
             const cards = document.querySelectorAll('.book-card');
-            
-            if (term === '') {
-                cards.forEach(card => card.style.display = 'flex');
-                document.querySelectorAll('section[id^="cat-"]').forEach(sec => sec.style.display = 'block');
-                return;
-            }
-
-            cards.forEach(card => {
-                const title = card.getAttribute('data-title');
-                card.style.display = title.includes(term) ? 'flex' : 'none';
-            });
-
-            document.querySelectorAll('section[id^="cat-"]').forEach(section => {
-                const visibleCards = section.querySelectorAll('.book-card[style="display: flex;"]');
-                section.style.display = visibleCards.length > 0 ? 'block' : 'none';
-            });
+            if (term === '') { cards.forEach(c => c.style.display = 'flex'); document.querySelectorAll('section[id^="cat-"]').forEach(s => s.style.display = 'block'); return; }
+            cards.forEach(c => { c.style.display = c.getAttribute('data-title').includes(term) ? 'flex' : 'none'; });
+            document.querySelectorAll('section[id^="cat-"]').forEach(s => { s.style.display = s.querySelectorAll('.book-card[style="display: flex;"]').length > 0 ? 'block' : 'none'; });
         }
-
         function showLoader(show) { document.getElementById('loader').style.display = show ? 'block' : 'none'; }
     </script>
 </body>
