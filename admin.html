@@ -3,124 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AEONIKA | Dashboard de Control</title>
-    <!-- Google Fonts -->
+    <title>AEONIKA | Panel de Administradores</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Poppins:wght@700;900&display=swap" rel="stylesheet">
-    <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Supabase & Image Compression -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.2/dist/browser-image-compression.js"></script>
 
     <style>
         :root {
-            --bg-deep: #030305;
-            --bg-surface: #0a0a0f;
-            --bg-card: #14141c;
-            --neon-blue: #00aaff;
-            --neon-glow: rgba(0, 170, 255, 0.4);
-            --text-primary: #f0f0f5;
-            --text-secondary: #94a3b8;
-            --danger: #ef4444;
-            --success: #10b981;
-            --sidebar-width: 260px;
+            --bg-deep: #030305; --bg-surface: #0a0a0f; --bg-card: #14141c;
+            --neon-blue: #00aaff; --neon-glow: rgba(0, 170, 255, 0.4);
+            --neon-gold: #ffd700; --gold-glow: rgba(255, 215, 0, 0.4);
+            --text-primary: #f0f0f5; --text-secondary: #94a3b8;
+            --danger: #ef4444; --success: #10b981; --sidebar-width: 260px;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-deep);
-            color: var(--text-primary);
-            display: flex;
-            height: 100vh;
-            overflow: hidden;
-        }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-deep); color: var(--text-primary); display: flex; height: 100vh; overflow: hidden; }
 
         /* --- LOGIN SCREEN --- */
-        #loginOverlay {
-            position: fixed; inset: 0; z-index: 5000;
-            background: radial-gradient(circle at center, #1a1a2e, #030305);
-            display: flex; align-items: center; justify-content: center;
-            padding: 20px;
-        }
-        .login-card {
-            width: 100%; max-width: 400px; padding: 40px;
-            background: var(--bg-card); border-radius: 24px;
-            border: 1px solid rgba(0, 170, 255, 0.2);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            text-align: center;
-        }
+        #loginOverlay { position: fixed; inset: 0; z-index: 5000; background: radial-gradient(circle at center, #1a1a2e, #030305); display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .login-card { width: 100%; max-width: 400px; padding: 40px; background: var(--bg-card); border-radius: 24px; border: 1px solid rgba(0, 170, 255, 0.2); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); text-align: center; }
         .login-card img { height: 50px; margin-bottom: 20px; filter: drop-shadow(0 0 10px var(--neon-blue)); }
         
         /* --- SIDEBAR --- */
-        .sidebar {
-            width: var(--sidebar-width);
-            background: var(--bg-surface);
-            border-right: 1px solid rgba(255,255,255,0.05);
-            display: flex; flex-direction: column;
-            padding: 30px 20px;
-            height: 100vh;
-            flex-shrink: 0;
-            transition: transform 0.3s ease;
-            z-index: 2000;
-        }
+        .sidebar { width: var(--sidebar-width); background: var(--bg-surface); border-right: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column; padding: 30px 20px; height: 100vh; flex-shrink: 0; transition: transform 0.3s ease; z-index: 2000; }
         .sidebar-logo { display: flex; align-items: center; gap: 12px; margin-bottom: 50px; padding-left: 10px; }
         .sidebar-logo img { height: 32px; filter: drop-shadow(0 0 5px var(--neon-blue)); }
         .sidebar-logo span { font-family: 'Poppins'; font-size: 1.2rem; letter-spacing: -1px; color: var(--neon-blue); }
 
         .menu-label { font-size: 0.7rem; font-weight: 800; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px; padding-left: 10px; }
-        .menu-item {
-            display: flex; align-items: center; gap: 15px; padding: 14px 18px;
-            color: var(--text-secondary); text-decoration: none; border-radius: 12px;
-            transition: 0.3s; cursor: pointer; font-size: 0.9rem; font-weight: 500;
-            margin-bottom: 5px;
-        }
+        .menu-item { display: flex; align-items: center; gap: 15px; padding: 14px 18px; color: var(--text-secondary); text-decoration: none; border-radius: 12px; transition: 0.3s; cursor: pointer; font-size: 0.9rem; font-weight: 500; margin-bottom: 5px; }
         .menu-item:hover { background: rgba(255,255,255,0.03); color: #fff; }
         .menu-item.active { background: rgba(0, 170, 255, 0.1); color: var(--neon-blue); }
-        .menu-item i { width: 20px; font-size: 1.1rem; }
-
-        /* --- MOBILE OVERLAY & TOGGLE --- */
-        .mobile-toggle { display: none; background: none; border: none; color: var(--text-primary); font-size: 1.5rem; cursor: pointer; transition: color 0.3s; }
-        .mobile-toggle:hover { color: var(--neon-blue); }
-        .sidebar-overlay {
-            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 1999; backdrop-filter: blur(2px);
-        }
+        .menu-item.active-gold { background: rgba(255, 215, 0, 0.1); color: var(--neon-gold); }
 
         /* --- MAIN CONTENT --- */
-        .main-wrapper { 
-            flex: 1; 
-            display: flex; 
-            flex-direction: column; 
-            height: 100vh;
-            overflow: hidden; 
-        }
-        
-        header {
-            padding: 20px 40px; border-bottom: 1px solid rgba(255,255,255,0.05);
-            display: flex; justify-content: space-between; align-items: center;
-            background: rgba(3, 3, 5, 0.8); backdrop-filter: blur(10px);
-            flex-shrink: 0;
-        }
+        .main-wrapper { flex: 1; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+        header { padding: 20px 40px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; background: rgba(3, 3, 5, 0.8); backdrop-filter: blur(10px); flex-shrink: 0; }
         .header-left { display: flex; align-items: center; gap: 20px; }
         .user-info { display: flex; align-items: center; gap: 15px; }
         .user-badge { background: var(--bg-card); padding: 5px 15px; border-radius: 20px; font-size: 0.75rem; border: 1px solid rgba(255,255,255,0.1); }
-
-        .content-area { 
-            flex: 1; 
-            overflow-y: auto; 
-            padding: 40px; 
-            padding-bottom: 120px;
-            scrollbar-width: thin;
-            scrollbar-color: var(--neon-blue) transparent;
-        }
+        .content-area { flex: 1; overflow-y: auto; padding: 40px; padding-bottom: 120px; scrollbar-width: thin; scrollbar-color: var(--neon-blue) transparent; }
         .content-area::-webkit-scrollbar { width: 6px; }
-        .content-area::-webkit-scrollbar-track { background: transparent; }
         .content-area::-webkit-scrollbar-thumb { background: var(--neon-blue); border-radius: 10px; }
 
         .view-section { display: none; animation: slideUp 0.4s ease-out; }
         .view-section.active { display: block; }
-
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
         /* --- WIDGETS & TABLES --- */
@@ -132,35 +61,27 @@
 
         .data-card { background: var(--bg-card); border-radius: 24px; border: 1px solid rgba(255,255,255,0.05); overflow: hidden; margin-bottom: 30px; width: 100%; overflow-x: auto; }
         .card-header { padding: 25px 30px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; }
-        
-        table { width: 100%; border-collapse: collapse; text-align: left; min-width: 600px; }
+        table { width: 100%; border-collapse: collapse; text-align: left; min-width: 800px; }
         th { padding: 15px 30px; font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; background: rgba(0,0,0,0.2); }
         td { padding: 18px 30px; border-bottom: 1px solid rgba(255,255,255,0.02); font-size: 0.9rem; }
-        tr:last-child td { border-bottom: none; }
         tr:hover td { background: rgba(255,255,255,0.01); }
 
         .badge { padding: 4px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; }
         .badge-cat { background: rgba(0, 170, 255, 0.1); color: var(--neon-blue); }
+        .badge-premium { background: rgba(255, 215, 0, 0.1); color: var(--neon-gold); border: 1px solid var(--neon-gold); }
 
         /* --- FORMS --- */
         .form-grid { display: grid; grid-template-columns: 1fr 300px; gap: 40px; }
         .input-group { margin-bottom: 25px; }
         .input-group label { display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 10px; text-transform: uppercase; }
-        .input-group input[type="text"], .input-group input[type="email"], .input-group input[type="password"], .input-group input[type="url"], .input-group select, .input-group textarea {
-            width: 100%; padding: 14px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 12px; color: #fff; font-family: inherit; transition: 0.3s;
+        .input-group input[type="text"], .input-group input[type="email"], .input-group input[type="password"], .input-group input[type="url"], .input-group input[type="number"], .input-group select, .input-group textarea {
+            width: 100%; padding: 14px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color: #fff; font-family: inherit; transition: 0.3s;
         }
         .input-group input:focus, .input-group select:focus, .input-group textarea:focus { border-color: var(--neon-blue); outline: none; box-shadow: 0 0 15px rgba(0, 170, 255, 0.1); }
-        
-        .file-upload { 
-            border: 2px dashed rgba(255,255,255,0.1); padding: 30px; border-radius: 16px; text-align: center; cursor: pointer; transition: 0.3s; display: block;
-        }
+        .file-upload { border: 2px dashed rgba(255,255,255,0.1); padding: 30px; border-radius: 16px; text-align: center; cursor: pointer; transition: 0.3s; display: block; }
         .file-upload:hover { border-color: var(--neon-blue); background: rgba(0, 170, 255, 0.02); }
 
-        .btn {
-            padding: 14px 28px; border-radius: 12px; font-weight: 700; font-size: 0.9rem; cursor: pointer; transition: 0.3s;
-            display: inline-flex; align-items: center; justify-content: center; gap: 10px; border: none; font-family: inherit;
-        }
+        .btn { padding: 14px 28px; border-radius: 12px; font-weight: 700; font-size: 0.9rem; cursor: pointer; transition: 0.3s; display: inline-flex; align-items: center; justify-content: center; gap: 10px; border: none; font-family: inherit; }
         .btn-primary { background: var(--neon-blue); color: #000; }
         .btn-primary:hover { box-shadow: 0 0 25px var(--neon-glow); transform: translateY(-2px); }
         .btn-ghost { background: transparent; border: 1px solid rgba(255,255,255,0.1); color: var(--text-primary); }
@@ -173,7 +94,7 @@
         .preview-box { width: 100%; aspect-ratio: 3/4; border-radius: 16px; background: #000; border: 1px solid rgba(255,255,255,0.05); overflow: hidden; }
         .preview-box img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* --- MODALS (Ventanas de Alerta Customizadas) --- */
+        /* --- MODALS --- */
         .custom-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 9999; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(5px); opacity: 0; visibility: hidden; transition: 0.3s; }
         .custom-modal.active { opacity: 1; visibility: visible; }
         .modal-box { background: var(--bg-card); padding: 30px; border-radius: 20px; border: 1px solid var(--neon-blue); text-align: center; max-width: 350px; width: 90%; transform: scale(0.9); transition: 0.3s; }
@@ -181,42 +102,32 @@
 
         #loader { position: fixed; top: 0; left: 0; width: 100%; height: 3px; background: var(--neon-blue); z-index: 10000; display: none; }
         .hidden { display: none !important; }
+        .mobile-toggle { display: none; background: none; border: none; color: var(--text-primary); font-size: 1.5rem; cursor: pointer; transition: color 0.3s; }
 
-        /* --- RESPONSIVE FIXES --- */
+        /* --- RESPONSIVE --- */
         @media (max-width: 1024px) {
-            .sidebar { 
-                position: fixed; left: 0; top: 0; bottom: 0; 
-                transform: translateX(-100%); 
-                width: var(--sidebar-width);
-            }
+            .sidebar { position: fixed; left: 0; top: 0; bottom: 0; transform: translateX(-100%); width: var(--sidebar-width); }
             .sidebar.open { transform: translateX(0); }
-            .sidebar-overlay.active { display: block; }
             .mobile-toggle { display: block; }
             header { padding: 15px 20px; }
             .content-area { padding: 20px; padding-bottom: 80px; }
             .form-grid { grid-template-columns: 1fr; }
-            
             #categoriesSection .form-grid { display: flex; flex-direction: column-reverse; gap: 30px; }
             .user-badge { display: none; }
-
             .login-card { padding: 30px 20px; border-radius: 20px; max-width: 95%; }
             .login-card h2 { font-size: 1.4rem; }
-            .login-card img { height: 40px; margin-bottom: 15px; }
-            .login-card p { margin-bottom: 20px !important; }
         }
     </style>
 </head>
 <body>
 
     <div id="loader"></div>
-    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
 
-    <!-- MODALES CUSTOMIZADOS -->
     <div id="alertModal" class="custom-modal">
         <div class="modal-box">
             <i class="fas fa-info-circle" style="font-size: 3rem; color: var(--neon-blue); margin-bottom: 15px; display: block;"></i>
             <h3 style="font-family: 'Poppins'; margin-bottom: 10px;">Notificación</h3>
-            <p id="alertMessage" style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 25px; line-height: 1.5;"></p>
+            <p id="alertMessage" style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 25px;"></p>
             <button id="btnAcceptAlert" class="btn btn-primary" style="width: 100%; justify-content: center;">Entendido</button>
         </div>
     </div>
@@ -225,10 +136,10 @@
         <div class="modal-box">
             <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: var(--danger); margin-bottom: 15px; display: block;"></i>
             <h3 style="font-family: 'Poppins'; margin-bottom: 10px;">¿Estás seguro?</h3>
-            <p id="confirmMessage" style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 25px; line-height: 1.5;">Esta acción no se puede deshacer.</p>
+            <p id="confirmMessage" style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 25px;">Esta acción no se puede deshacer.</p>
             <div style="display: flex; gap: 15px; justify-content: center;">
-                <button id="btnCancelConfirm" class="btn btn-ghost" style="flex: 1; justify-content: center; padding: 12px;">Cancelar</button>
-                <button id="btnAcceptConfirm" class="btn btn-primary" style="flex: 1; justify-content: center; background: var(--danger); color: #fff; padding: 12px;">Confirmar</button>
+                <button id="btnCancelConfirm" class="btn btn-ghost" style="flex: 1;">Cancelar</button>
+                <button id="btnAcceptConfirm" class="btn btn-primary" style="flex: 1; background: var(--danger); color: #fff;">Confirmar</button>
             </div>
         </div>
     </div>
@@ -239,7 +150,6 @@
             <img src="https://i.ibb.co/r1jmr8t/Pics-Art-12-04-08-42-09.png" alt="Aeonika">
             <h2 style="font-family: 'Poppins'; margin-bottom: 5px;">Panel de administradores</h2>
             <p style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 30px;">Identificación de moderador requerida</p>
-            
             <form onsubmit="handleLogin(event)">
                 <div class="input-group" style="text-align: left;">
                     <label>Correo Electrónico</label>
@@ -257,47 +167,34 @@
         </div>
     </div>
 
-    <!-- SIDEBAR DE NAVEGACIÓN -->
+    <!-- SIDEBAR -->
     <aside class="sidebar hidden" id="sidebar">
         <div class="sidebar-logo">
-            <img src="https://i.ibb.co/r1jmr8t/Pics-Art-12-04-08-42-09.png" alt="Logo">
-            <span>AEONIKA</span>
+            <img src="https://i.ibb.co/r1jmr8t/Pics-Art-12-04-08-42-09.png" alt="Logo"><span>AEONIKA</span>
         </div>
 
         <div class="menu-label">Gestión</div>
-        <div class="menu-item active" id="menu-dashboard" onclick="switchView('dashboard', this); toggleSidebar();">
-            <i class="fas fa-chart-pie"></i> <span>Dashboard</span>
-        </div>
-        <div class="menu-item" id="menu-books" onclick="switchView('books', this); toggleSidebar();">
-            <i class="fas fa-book"></i> <span>Libros</span>
-        </div>
-        <div class="menu-item" id="menu-categories" onclick="switchView('categories', this); toggleSidebar();">
-            <i class="fas fa-tags"></i> <span>Categorías</span>
-        </div>
+        <div class="menu-item active" id="menu-dashboard" onclick="switchView('dashboard', this); toggleSidebar();"><i class="fas fa-chart-pie"></i> <span>Dashboard</span></div>
+        <div class="menu-item" id="menu-books" onclick="switchView('books', this); toggleSidebar();"><i class="fas fa-book"></i> <span>Libros</span></div>
+        <div class="menu-item" id="menu-categories" onclick="switchView('categories', this); toggleSidebar();"><i class="fas fa-tags"></i> <span>Categorías</span></div>
+        
+        <div class="menu-label" style="margin-top: 20px; color: var(--neon-gold);">Monetización</div>
+        <div class="menu-item" id="menu-users" onclick="switchView('users', this); toggleSidebar();" style="color: var(--neon-gold);"><i class="fas fa-users-crown"></i> <span>Suscripciones</span></div>
 
-        <div class="menu-label" style="margin-top: 30px;">Sistema</div>
-        <div class="menu-item" onclick="window.open('index.html', '_blank')">
-            <i class="fas fa-external-link-alt"></i> <span>Ver Web Pública</span>
-        </div>
-        <div class="menu-item" style="color: var(--danger); margin-top: auto;" onclick="handleLogout()">
-            <i class="fas fa-sign-out-alt"></i> <span>Cerrar Sesión</span>
-        </div>
+        <div class="menu-label" style="margin-top: auto;">Sistema</div>
+        <div class="menu-item" onclick="window.open('index.html', '_blank')"><i class="fas fa-external-link-alt"></i> <span>Ver Web Pública</span></div>
+        <div class="menu-item" style="color: var(--danger);" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> <span>Cerrar Sesión</span></div>
     </aside>
 
-    <!-- ÁREA PRINCIPAL -->
     <main class="main-wrapper hidden" id="mainWrapper">
         <header>
             <div class="header-left">
-                <button class="mobile-toggle" onclick="toggleSidebar()">
-                    <i class="fas fa-bars"></i>
-                </button>
+                <button class="mobile-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
                 <h3 id="currentViewTitle" style="font-family: 'Poppins'; margin: 0;">Dashboard</h3>
             </div>
             <div class="user-info">
                 <span class="user-badge" id="userEmail">admin@aeonika.com</span>
-                <div style="width: 35px; height: 35px; border-radius: 10px; background: linear-gradient(45deg, #00aaff, #0044ff); display: flex; align-items: center; justify-content: center;">
-                    <i class="fas fa-user-shield" style="color: #000;"></i>
-                </div>
+                <div style="width: 35px; height: 35px; border-radius: 10px; background: linear-gradient(45deg, #00aaff, #0044ff); display: flex; align-items: center; justify-content: center;"><i class="fas fa-user-shield" style="color: #000;"></i></div>
             </div>
         </header>
 
@@ -306,40 +203,15 @@
             <!-- VISTA: DASHBOARD -->
             <section id="dashboardSection" class="view-section active">
                 <div class="stats-grid">
-                    <div class="stat-card">
-                        <h4>Libros Archivados</h4>
-                        <div class="value" id="statBooks">0</div>
-                        <i class="fas fa-book"></i>
-                    </div>
-                    <div class="stat-card">
-                        <h4>Secciones Activadas</h4>
-                        <div class="value" id="statCats">0</div>
-                        <i class="fas fa-tags"></i>
-                    </div>
-                    <div class="stat-card">
-                        <h4>Estado del Archivo</h4>
-                        <div class="value" style="color: var(--success); font-size: 1.2rem;">Sincronizado</div>
-                        <i class="fas fa-check-circle"></i>
-                    </div>
+                    <div class="stat-card"><h4>Libros Archivados</h4><div class="value" id="statBooks">0</div><i class="fas fa-book"></i></div>
+                    <div class="stat-card"><h4>Lectores Registrados</h4><div class="value" id="statUsers">0</div><i class="fas fa-users"></i></div>
+                    <div class="stat-card"><h4>Estado</h4><div class="value" style="color: var(--success); font-size: 1.2rem;">Sincronizado</div><i class="fas fa-check-circle"></i></div>
                 </div>
-
                 <div class="data-card">
-                    <div class="card-header">
-                        <h4 style="font-family: 'Poppins'; margin: 0;">Actividad Reciente</h4>
-                        <button class="btn btn-ghost" style="padding: 8px 15px; font-size: 0.7rem;" onclick="switchView('books', document.getElementById('menu-books'))">Ver todos</button>
-                    </div>
+                    <div class="card-header"><h4 style="font-family: 'Poppins'; margin: 0;">Actividad Reciente</h4></div>
                     <table id="recentActivityTable">
-                        <thead>
-                            <tr>
-                                <th>Portada</th>
-                                <th>Título</th>
-                                <th>Categoría</th>
-                                <th>Fecha</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!-- Se llena dinámicamente -->
-                        </tbody>
+                        <thead><tr><th>Portada</th><th>Título</th><th>Categoría</th><th>Fecha</th></tr></thead>
+                        <tbody></tbody>
                     </table>
                 </div>
             </section>
@@ -349,25 +221,14 @@
                 <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 15px; margin-bottom: 30px; align-items: center;">
                     <div style="position: relative; flex: 1; max-width: 350px;">
                         <i class="fas fa-search" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-secondary);"></i>
-                        <input type="text" placeholder="Buscar libro por título..." id="bookSearch" style="width: 100%; padding: 12px 12px 12px 45px; background: var(--bg-card); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; color: #fff;" oninput="filterBooks()">
+                        <input type="text" placeholder="Buscar libro..." id="bookSearch" style="width: 100%; padding: 12px 12px 12px 45px; background: var(--bg-card); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; color: #fff;" oninput="filterBooks()">
                     </div>
-                    <button class="btn btn-primary" onclick="showUploadModal()">
-                        <i class="fas fa-plus"></i> NUEVO REGISTRO
-                    </button>
+                    <button class="btn btn-primary" onclick="showUploadModal()"><i class="fas fa-plus"></i> NUEVO REGISTRO</button>
                 </div>
-
                 <div class="data-card">
                     <table id="allBooksTable">
-                        <thead>
-                            <tr>
-                                <th>Obra</th>
-                                <th>Categoría</th>
-                                <th style="text-align: center;">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody id="booksListBody">
-                            <!-- Lista completa de libros -->
-                        </tbody>
+                        <thead><tr><th>Obra</th><th>Tipo / Acceso</th><th style="text-align: center;">Acciones</th></tr></thead>
+                        <tbody id="booksListBody"></tbody>
                     </table>
                 </div>
             </section>
@@ -376,95 +237,88 @@
             <section id="categoriesSection" class="view-section">
                 <div class="form-grid">
                     <div class="data-card">
-                        <div class="card-header">
-                            <h4 style="margin: 0;">Lista de Secciones</h4>
-                            <span style="font-size: 0.75rem; color: var(--text-secondary);">Usa las flechas para ordenar</span>
-                        </div>
+                        <div class="card-header"><h4 style="margin: 0;">Lista de Secciones</h4></div>
                         <table id="catsTable">
-                            <thead>
-                                <tr>
-                                    <th>Nombre</th>
-                                    <th>Slug (ID URL)</th>
-                                    <th style="text-align: center;">Acciones</th>
-                                </tr>
-                            </thead>
+                            <thead><tr><th>Nombre</th><th>Slug</th><th style="text-align: center;">Acciones</th></tr></thead>
                             <tbody id="catsListBody"></tbody>
                         </table>
                     </div>
-                    
                     <div class="data-card" style="padding: 30px; height: fit-content;">
                         <h4 style="margin-bottom: 20px; font-family: 'Poppins';">Nueva Sección</h4>
-                        <div class="input-group">
-                            <label>Nombre</label>
-                            <input type="text" id="newCatName" placeholder="Ej: Alquimia Práctica">
-                        </div>
+                        <div class="input-group"><label>Nombre</label><input type="text" id="newCatName" placeholder="Ej: Alquimia Práctica"></div>
                         <button class="btn btn-primary" style="width: 100%; justify-content: center;" onclick="addCategory()">CREAR SECCIÓN</button>
                     </div>
                 </div>
             </section>
 
+            <!-- VISTA: SUSCRIPCIONES Y USUARIOS -->
+            <section id="usersSection" class="view-section">
+                <div class="data-card">
+                    <div class="card-header">
+                        <h4 style="margin: 0; font-family: 'Poppins'; color: var(--neon-gold);"><i class="fas fa-users"></i> Gestión de Usuarios y Suscripciones</h4>
+                    </div>
+                    <table id="usersTable">
+                        <thead>
+                            <tr>
+                                <th>Usuario / Email</th>
+                                <th>Rol en Plataforma</th>
+                                <th>Tipo de Suscripción</th>
+                                <th>Libros Comprados (Individuales)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersListBody">
+                            <!-- Llenado dinámico -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
             <!-- SECCIÓN: SUBIDA / EDICIÓN -->
             <section id="uploadSection" class="view-section">
-                <button class="btn btn-ghost" style="margin-bottom: 20px;" onclick="switchView('books', document.getElementById('menu-books'))">
-                    <i class="fas fa-arrow-left"></i> Volver al Archivo
-                </button>
-                
+                <button class="btn btn-ghost" style="margin-bottom: 20px;" onclick="switchView('books', document.getElementById('menu-books'))"><i class="fas fa-arrow-left"></i> Volver al Archivo</button>
                 <div class="data-card" style="padding: 40px;">
                     <h2 id="formTitle" style="font-family: 'Poppins'; margin-bottom: 30px;">Registrar Grimorio</h2>
-                    
                     <form id="bookForm" class="form-grid">
-                        <input type="hidden" id="editBookId"> <!-- Hidden ID para saber si es Editar -->
-                        
+                        <input type="hidden" id="editBookId">
                         <div class="fields">
-                            <div class="input-group">
-                                <label>Título del Libro</label>
-                                <input type="text" id="bookTitle" required placeholder="Nombre completo de la obra">
-                            </div>
+                            <div class="input-group"><label>Título</label><input type="text" id="bookTitle" required placeholder="Nombre de la obra"></div>
                             <div class="grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
-                                <div class="input-group">
-                                    <label>Categoría</label>
-                                    <select id="bookCategory" required></select>
-                                </div>
-                                <div class="input-group">
-                                    <label>Enlace G-Drive / Mega / PDF</label>
-                                    <input type="url" id="bookLink" required placeholder="https://...">
-                                </div>
+                                <div class="input-group"><label>Categoría</label><select id="bookCategory" required></select></div>
+                                <div class="input-group"><label>Enlace (G-Drive/Mega)</label><input type="url" id="bookLink" required placeholder="https://..."></div>
                             </div>
-                            <div class="input-group">
-                                <label>Descripción / Resumen (Opcional)</label>
-                                <textarea id="bookDesc" rows="4" placeholder="Breve descripción del contenido mágico..."></textarea>
-                            </div>
-                            
+                            <div class="input-group"><label>Descripción</label><textarea id="bookDesc" rows="4" placeholder="Breve resumen..."></textarea></div>
                             <div class="input-group">
                                 <label>Archivo de Portada</label>
                                 <label for="bookFile" class="file-upload">
                                     <i class="fas fa-cloud-upload-alt" style="font-size: 2rem; color: var(--neon-blue); margin-bottom: 10px; display: block;"></i>
-                                    <span id="fileNameLabel">Haz clic para subir desde dispositivo</span>
+                                    <span id="fileNameLabel">Haz clic para subir portada</span>
                                     <input type="file" id="bookFile" accept="image/*" class="hidden" onchange="handleFilePreview(this)">
                                 </label>
                             </div>
 
-                            <!-- NUEVA CASILLA PARA AUDIOLIBROS -->
-                            <div class="input-group" style="display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
-                                <input type="checkbox" id="bookIsAudio" style="width: 20px; height: 20px; accent-color: var(--neon-blue); cursor: pointer;">
-                                <label for="bookIsAudio" style="margin: 0; cursor: pointer; font-size: 0.85rem; text-transform: uppercase; color: var(--text-primary); font-weight: 700;">
-                                    <i class="fas fa-headphones-alt" style="color: var(--neon-blue); margin-right: 8px;"></i> Etiquetar como Audiolibro
-                                </label>
-                            </div>
-
-                            <button type="submit" class="btn btn-primary" id="submitBtn" style="width: 100%; justify-content: center; padding: 18px; letter-spacing: 1px;">
-                                <i class="fas fa-save"></i> PUBLICAR EN EL ARCHIVO
-                            </button>
-                        </div>
-                        
-                        <div class="preview-sidebar">
-                            <label style="font-size: 0.7rem; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 10px; display: block;">Previsualización de Arte</label>
-                            <div class="preview-box">
-                                <img src="" id="imgPreview" class="hidden">
-                                <div id="previewPlaceholder" style="height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; color: rgba(255,255,255,0.05);">
-                                    <i class="fas fa-image" style="font-size: 4rem;"></i>
+                            <!-- ETIQUETAS Y MONETIZACIÓN -->
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 25px;">
+                                <div class="input-group" style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; gap: 10px;">
+                                    <input type="checkbox" id="bookIsAudio" style="width: 20px; height: 20px; accent-color: var(--neon-blue); cursor: pointer;">
+                                    <label for="bookIsAudio" style="margin: 0; cursor: pointer; font-size: 0.85rem; font-weight: 700; color: #fff;"><i class="fas fa-headphones-alt" style="color: var(--neon-blue);"></i> Es Audiolibro</label>
+                                </div>
+                                <div class="input-group" style="background: rgba(255,215,0,0.05); padding: 15px; border-radius: 12px; border: 1px solid var(--gold-glow); display: flex; align-items: center; gap: 10px;">
+                                    <input type="checkbox" id="bookIsPremium" style="width: 20px; height: 20px; accent-color: var(--neon-gold); cursor: pointer;" onchange="document.getElementById('priceContainer').style.display = this.checked ? 'block' : 'none'">
+                                    <label for="bookIsPremium" style="margin: 0; cursor: pointer; font-size: 0.85rem; font-weight: 700; color: var(--neon-gold);"><i class="fas fa-star"></i> Bloquear (Premium)</label>
                                 </div>
                             </div>
+
+                            <!-- PRECIO -->
+                            <div class="input-group" id="priceContainer" style="display: none;">
+                                <label style="color: var(--neon-gold);">Precio del Tomo (USD)</label>
+                                <input type="number" id="bookPrice" placeholder="Ej: 5.00" step="0.01" min="0" style="border-color: var(--gold-glow);">
+                            </div>
+
+                            <button type="submit" class="btn btn-primary" id="submitBtn" style="width: 100%; justify-content: center; padding: 18px; letter-spacing: 1px;"><i class="fas fa-save"></i> GUARDAR EN ARCHIVO</button>
+                        </div>
+                        <div class="preview-sidebar">
+                            <label style="font-size: 0.7rem; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 10px; display: block;">Previsualización de Arte</label>
+                            <div class="preview-box"><img src="" id="imgPreview" class="hidden"><div id="previewPlaceholder" style="height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; color: rgba(255,255,255,0.05);"><i class="fas fa-image" style="font-size: 4rem;"></i></div></div>
                         </div>
                     </form>
                 </div>
@@ -474,24 +328,18 @@
     </main>
 
     <script>
-        // --- CONFIGURACIÓN SUPABASE ---
         const SUPABASE_URL = 'https://frtiwrvfvsfkaneikphy.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_w8yEF_sDOzeMM3vjOT3h5w_zHwE0lXc';
 
-        let sb;
-        let books = [];
-        let cats = [];
-        let currentEditImageUrl = ''; 
+        let sb; let books = []; let cats = []; let users = []; let currentEditImageUrl = ''; 
+        let isMasterAdmin = false;
 
         document.addEventListener('DOMContentLoaded', async () => {
             sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-            
             const { data: { session } } = await sb.auth.getSession();
             if (session) setupAdminSession(session.user);
-
             sb.auth.onAuthStateChange((_event, session) => {
-                if (session) setupAdminSession(session.user);
-                else destroyAdminSession();
+                if (session) setupAdminSession(session.user); else destroyAdminSession();
             });
         });
 
@@ -508,47 +356,57 @@
                 const modal = document.getElementById('confirmModal');
                 document.getElementById('confirmMessage').innerText = message;
                 modal.classList.add('active');
-
-                const cleanup = () => {
-                    modal.classList.remove('active');
-                    document.getElementById('btnCancelConfirm').onclick = null;
-                    document.getElementById('btnAcceptConfirm').onclick = null;
-                };
-
+                const cleanup = () => { modal.classList.remove('active'); };
                 document.getElementById('btnCancelConfirm').onclick = () => { cleanup(); resolve(false); };
                 document.getElementById('btnAcceptConfirm').onclick = () => { cleanup(); resolve(true); };
             });
         }
 
-        // --- UI MÓVIL ---
-        function toggleSidebar() {
-            if(window.innerWidth <= 1024) {
-                document.getElementById('sidebar').classList.toggle('open');
-                document.getElementById('sidebarOverlay').classList.toggle('active');
-            }
-        }
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
 
-        // --- AUTH ---
         async function handleLogin(e) {
             if (e) e.preventDefault();
-            const email = document.getElementById('loginEmail').value;
-            const pass = document.getElementById('loginPass').value;
             showLoader(true);
-            const { error } = await sb.auth.signInWithPassword({ email, password: pass });
+            const { error } = await sb.auth.signInWithPassword({ email: document.getElementById('loginEmail').value, password: document.getElementById('loginPass').value });
             showLoader(false);
             if (error) customAlert("Error de acceso: " + error.message);
         }
 
-        async function handleLogout() {
-            if(await customConfirm("¿Cerrar sesión de moderador?")) sb.auth.signOut();
-        }
+        async function handleLogout() { if(await customConfirm("¿Cerrar sesión?")) sb.auth.signOut(); }
 
-        function setupAdminSession(user) {
+        async function setupAdminSession(user) {
+            showLoader(true);
+            
+            // 1. Obtenemos el perfil del usuario directo de la Base de Datos
+            let { data: profile } = await sb.from('perfiles').select('*').eq('id', user.id).single();
+            
+            // Si el usuario no tiene perfil (error extraño), se lo creamos como lector básico
+            if(!profile) {
+                const newProfile = { id: user.id, email: user.email, es_admin: false, es_suscriptor: false, es_master: false, libros_desbloqueados: [] };
+                await sb.from('perfiles').insert([newProfile]);
+                profile = newProfile;
+            }
+
+            // Establecemos globalmente si el que está viendo el panel es el dueño
+            isMasterAdmin = (profile.es_master === true);
+
+            // 🛑 GUARDIA DE SEGURIDAD ESTRICTO: Expulsar si no es Administrador
+            if (profile.es_admin !== true) {
+                await sb.auth.signOut();
+                showLoader(false);
+                customAlert("🛑 ACCESO DENEGADO: Tu cuenta es de Lector. No tienes permisos para ingresar al Panel Maestro.");
+                destroyAdminSession();
+                return;
+            }
+
+            // Si pasa las barreras, dibujamos el panel
             document.getElementById('loginOverlay').classList.add('hidden');
             document.getElementById('sidebar').classList.remove('hidden');
             document.getElementById('mainWrapper').classList.remove('hidden');
             document.getElementById('userEmail').innerText = user.email;
-            refreshData();
+            
+            await refreshData();
+            showLoader(false);
         }
 
         function destroyAdminSession() {
@@ -560,33 +418,25 @@
         // --- DATA ---
         async function refreshData() {
             showLoader(true);
-            const { data: catData } = await sb.from('categorias').select('*').order('orden', { ascending: true }).order('created_at', { ascending: true });
+            const { data: catData } = await sb.from('categorias').select('*').order('orden');
             const { data: bookData } = await sb.from('libros').select('*').order('created_at', { ascending: false });
+            const { data: usersData } = await sb.from('perfiles').select('*').order('created_at', { ascending: false });
             
-            cats = catData || [];
-            books = bookData || [];
+            cats = catData || []; books = bookData || []; users = usersData || [];
 
-            renderDashboard();
-            renderBooksList();
-            renderCatsList();
-            populateSelects();
+            renderDashboard(); renderBooksList(); renderCatsList(); renderUsersList(); populateSelects();
             showLoader(false);
         }
 
         // --- RENDERERS ---
         function renderDashboard() {
             document.getElementById('statBooks').innerText = books.length;
-            document.getElementById('statCats').innerText = cats.length;
-
+            document.getElementById('statUsers').innerText = users.length;
             const recent = books.slice(0, 5);
-            const tbody = document.getElementById('recentActivityTable').querySelector('tbody');
-            tbody.innerHTML = recent.map(b => `
+            document.getElementById('recentActivityTable').querySelector('tbody').innerHTML = recent.map(b => `
                 <tr>
-                    <td><img src="${b.image_url}" style="width:35px; height:50px; border-radius:5px; object-fit:cover; border: 1px solid rgba(255,255,255,0.1);"></td>
-                    <td>
-                        <span style="font-weight:600;">${b.titulo}</span>
-                        ${b.es_audiolibro ? '<i class="fas fa-headphones-alt" style="color: var(--neon-blue); margin-left: 5px;" title="Audiolibro"></i>' : ''}
-                    </td>
+                    <td><img src="${b.image_url}" style="width:35px; height:50px; border-radius:5px; object-fit:cover;"></td>
+                    <td><span style="font-weight:600;">${b.titulo}</span></td>
                     <td><span class="badge badge-cat">${b.categoria_slug}</span></td>
                     <td><span style="color:var(--text-secondary); font-size:0.8rem;">${new Date(b.created_at).toLocaleDateString()}</span></td>
                 </tr>
@@ -594,122 +444,219 @@
         }
 
         function renderBooksList() {
-            const tbody = document.getElementById('booksListBody');
-            tbody.innerHTML = books.map(b => `
+            document.getElementById('booksListBody').innerHTML = books.map(b => {
+                let badge = `<span class="badge badge-cat">${b.categoria_slug}</span>`;
+                if(b.es_audiolibro) badge += ` <i class="fas fa-headphones-alt" style="color: var(--neon-blue); margin-left: 5px;"></i>`;
+                if(b.es_premium) badge += ` <span class="badge badge-premium" style="margin-left: 5px;"><i class="fas fa-star"></i> $${b.precio}</span>`;
+                
+                return `
                 <tr class="book-row">
                     <td>
                         <div style="display:flex; align-items:center; gap:15px;">
-                            <img src="${b.image_url}" style="width:40px; height:55px; border-radius:8px; object-fit:cover; border: 1px solid rgba(255,255,255,0.1);">
-                            <span style="font-weight:600;" class="row-title">
-                                ${b.titulo}
-                                ${b.es_audiolibro ? '<i class="fas fa-headphones-alt" style="color: var(--neon-blue); margin-left: 8px;" title="Audiolibro"></i>' : ''}
-                            </span>
+                            <img src="${b.image_url}" style="width:40px; height:55px; border-radius:8px; object-fit:cover;">
+                            <span style="font-weight:600;" class="row-title">${b.titulo}</span>
                         </div>
                     </td>
-                    <td><span class="badge badge-cat">${b.categoria_slug}</span></td>
+                    <td>${badge}</td>
                     <td style="text-align: center;">
-                        <div style="display:flex; gap:5px; justify-content: center;">
-                            <button type="button" onclick="window.open('${b.download_url}', '_blank')" class="btn btn-ghost btn-action" title="Abrir Enlace"><i class="fas fa-external-link-alt"></i></button>
-                            <button type="button" onclick="editBook('${b.id}')" class="btn btn-ghost btn-action btn-edit-text" title="Editar"><i class="fas fa-edit"></i></button>
-                            <button type="button" onclick="deleteBook('${b.id}')" class="btn btn-ghost btn-action btn-danger-text" title="Eliminar"><i class="fas fa-trash"></i></button>
-                        </div>
+                        <button type="button" onclick="window.open('${b.download_url}', '_blank')" class="btn btn-ghost btn-action"><i class="fas fa-external-link-alt"></i></button>
+                        <button type="button" onclick="editBook('${b.id}')" class="btn btn-ghost btn-action btn-edit-text"><i class="fas fa-edit"></i></button>
+                        <button type="button" onclick="deleteBook('${b.id}')" class="btn btn-ghost btn-action btn-danger-text"><i class="fas fa-trash"></i></button>
                     </td>
-                </tr>
-            `).join('');
+                </tr>`
+            }).join('');
         }
 
         function renderCatsList() {
-            const tbody = document.getElementById('catsListBody');
-            tbody.innerHTML = cats.map((c, index) => `
+            document.getElementById('catsListBody').innerHTML = cats.map((c, index) => `
                 <tr>
-                    <td><strong>${c.nombre}</strong></td>
-                    <td><span style="color: var(--text-secondary); font-size: 0.8rem;">${c.slug}</span></td>
+                    <td><strong>${c.nombre}</strong></td><td><span style="color: var(--text-secondary); font-size: 0.8rem;">${c.slug}</span></td>
                     <td style="text-align: center;">
-                        <div style="display: flex; justify-content: center; gap: 5px;">
-                            <button type="button" onclick="moveCat(${index}, -1)" class="btn btn-ghost btn-action" title="Subir" ${index === 0 ? 'disabled style="opacity:0.3; cursor:not-allowed"' : ''}><i class="fas fa-arrow-up"></i></button>
-                            <button type="button" onclick="moveCat(${index}, 1)" class="btn btn-ghost btn-action" title="Bajar" ${index === cats.length - 1 ? 'disabled style="opacity:0.3; cursor:not-allowed"' : ''}><i class="fas fa-arrow-down"></i></button>
-                            <button type="button" onclick="deleteCat('${c.id}')" class="btn btn-ghost btn-action btn-danger-text" title="Eliminar"><i class="fas fa-trash"></i></button>
-                        </div>
+                        <button type="button" onclick="moveCat(${index}, -1)" class="btn btn-ghost btn-action"><i class="fas fa-arrow-up"></i></button>
+                        <button type="button" onclick="moveCat(${index}, 1)" class="btn btn-ghost btn-action"><i class="fas fa-arrow-down"></i></button>
+                        <button type="button" onclick="deleteCat('${c.id}')" class="btn btn-ghost btn-action btn-danger-text"><i class="fas fa-trash"></i></button>
                     </td>
                 </tr>
             `).join('');
         }
 
-        function populateSelects() {
-            const select = document.getElementById('bookCategory');
-            if(!select) return;
-            select.innerHTML = '<option value="">Selecciona sección...</option>' + 
-                cats.map(c => `<option value="${c.slug}">${c.nombre}</option>`).join('');
+        function renderUsersList() {
+            const bookOptions = books.filter(b => b.es_premium).map(b => `<option value="${b.id}">${b.titulo}</option>`).join('');
+            
+            document.getElementById('usersListBody').innerHTML = users.map(u => {
+                
+                // Determinamos si la fila que estamos dibujando es el Creador Supremo de la DB
+                const isThisRowTheMaster = (u.es_master === true);
+
+                // LOGICA DE ROL (Solo el Master puede asignar moderadores)
+                let roleHTML = '';
+                if (isThisRowTheMaster) {
+                    roleHTML = `<span style="color: var(--neon-gold); font-weight: 900; font-size: 0.8rem;"><i class="fas fa-crown"></i> CREADOR SUPREMO</span>`;
+                } else if (isMasterAdmin) {
+                    // Yo soy el master viendo a un usuario normal: le puedo dar admin
+                    roleHTML = `<label style="display:flex; align-items:center; gap:10px; cursor:pointer;">
+                                    <input type="checkbox" onchange="toggleUserAdmin('${u.id}', this.checked)" ${u.es_admin ? 'checked' : ''} style="width: 18px; height: 18px; accent-color: var(--danger);">
+                                    <span style="${u.es_admin ? 'color: var(--danger); font-weight: bold;' : 'color: var(--text-secondary);'}">Es Moderador</span>
+                                </label>`;
+                } else {
+                    // Yo soy un moderador normal: Solo veo quién es qué, no puedo editarlo
+                    roleHTML = `<span style="${u.es_admin ? 'color: var(--danger); font-weight: bold;' : 'color: var(--text-secondary);'}">${u.es_admin ? '<i class="fas fa-user-shield"></i> Moderador' : 'Lector'}</span>`;
+                }
+
+                // LOGICA DE SUSCRIPCION Y LIBROS
+                let vipHTML = '';
+                let boughtBooksHTML = '';
+                let booksActionsHTML = '';
+
+                // El Creador Supremo no puede ser modificado por error
+                if (isThisRowTheMaster) {
+                    vipHTML = `<span style="color: var(--text-secondary); font-size: 0.8rem;">ILIMITADA (Inamovible)</span>`;
+                    boughtBooksHTML = `<span style="color: var(--text-secondary); font-size: 0.8rem;">Acceso Total al Sistema</span>`;
+                } else {
+                    vipHTML = `<label style="display:flex; align-items:center; gap:10px; cursor:pointer;">
+                                    <input type="checkbox" onchange="toggleUserVip('${u.id}', this.checked)" ${u.es_suscriptor ? 'checked' : ''} style="width: 18px; height: 18px; accent-color: var(--neon-gold);">
+                                    <span class="badge ${u.es_suscriptor ? 'badge-premium' : ''}" style="${!u.es_suscriptor ? 'background: rgba(255,255,255,0.1); color: var(--text-secondary); border: 1px solid rgba(255,255,255,0.2);' : ''}">
+                                        ${u.es_suscriptor ? '<i class="fas fa-crown"></i> PREMIUM VIP' : 'GRATUITA'}
+                                    </span>
+                                </label>`;
+                    
+                    if(u.libros_desbloqueados && u.libros_desbloqueados.length > 0) {
+                        boughtBooksHTML = u.libros_desbloqueados.map(bid => {
+                            const book = books.find(b => b.id === bid);
+                            if(!book) return '';
+                            return `<div style="background: rgba(255,255,255,0.05); padding: 4px 10px; border-radius: 6px; display: inline-flex; align-items: center; gap: 8px; font-size: 0.75rem; margin: 2px;">
+                                        ${book.titulo}
+                                        <button onclick="removeBookAccess('${u.id}', '${book.id}')" style="color: var(--danger); background: none; border: none; cursor: pointer;"><i class="fas fa-times"></i></button>
+                                    </div>`;
+                        }).join('');
+                    } else {
+                        boughtBooksHTML = '<span style="color: var(--text-secondary); font-size: 0.8rem;">Ninguno</span>';
+                    }
+
+                    booksActionsHTML = `
+                        <div style="display: flex; gap: 5px; margin-top: 10px;">
+                            <select id="select-book-${u.id}" style="padding: 6px; background: #000; color: #fff; border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; max-width: 200px;">
+                                <option value="">Seleccionar libro...</option>
+                                ${bookOptions}
+                            </select>
+                            <button onclick="addBookAccess('${u.id}')" class="btn btn-ghost" style="padding: 6px 12px; font-size: 0.7rem;"><i class="fas fa-plus"></i> Dar Acceso</button>
+                        </div>
+                    `;
+                }
+
+                return `
+                <tr>
+                    <td><strong style="font-size: 0.9rem;">${u.email}</strong></td>
+                    <td>${roleHTML}</td>
+                    <td>${vipHTML}</td>
+                    <td>
+                        <div>${boughtBooksHTML}</div>
+                        ${booksActionsHTML}
+                    </td>
+                </tr>
+            `}).join('');
         }
 
-        // --- ACCIONES ---
-        async function deleteBook(id) {
-            if(!(await customConfirm("¿Seguro que deseas borrar este tomo del archivo Aeonika permanentemente?"))) return;
+        function populateSelects() {
+            document.getElementById('bookCategory').innerHTML = '<option value="">Selecciona sección...</option>' + cats.map(c => `<option value="${c.slug}">${c.nombre}</option>`).join('');
+        }
+
+        // --- ACCIONES DE USUARIOS ---
+        async function toggleUserAdmin(userId, status) {
+            if(!isMasterAdmin) return customAlert("Solo el Creador Supremo puede nombrar moderadores.");
+            const targetUser = users.find(u => u.id === userId);
+            if(targetUser && targetUser.es_master) return customAlert("No puedes editar al Creador Supremo.");
+            
             showLoader(true);
-            await sb.from('libros').delete().eq('id', id);
-            refreshData();
+            await sb.from('perfiles').update({ es_admin: status }).eq('id', userId);
+            await refreshData();
+        }
+
+        async function toggleUserVip(userId, status) {
+            const targetUser = users.find(u => u.id === userId);
+            if(targetUser && targetUser.es_master) return customAlert("No puedes modificar al Creador Supremo.");
+
+            showLoader(true);
+            await sb.from('perfiles').update({ es_suscriptor: status }).eq('id', userId);
+            await refreshData();
+        }
+
+        async function addBookAccess(userId) {
+            const targetUser = users.find(u => u.id === userId);
+            if(targetUser && targetUser.es_master) return;
+
+            const select = document.getElementById(`select-book-${userId}`);
+            const bookId = select.value;
+            if(!bookId) return;
+            
+            let arr = targetUser.libros_desbloqueados || [];
+            if(!arr.includes(bookId)) {
+                arr.push(bookId);
+                showLoader(true);
+                await sb.from('perfiles').update({ libros_desbloqueados: arr }).eq('id', userId);
+                await refreshData();
+            }
+        }
+
+        async function removeBookAccess(userId, bookId) {
+            if(!await customConfirm("¿Quitar acceso a este libro?")) return;
+            const targetUser = users.find(u => u.id === userId);
+            if(targetUser && targetUser.es_master) return;
+
+            let arr = targetUser.libros_desbloqueados || [];
+            arr = arr.filter(id => id !== bookId);
+            showLoader(true);
+            await sb.from('perfiles').update({ libros_desbloqueados: arr }).eq('id', userId);
+            await refreshData();
+        }
+
+        // --- ACCIONES DE LIBROS ---
+        async function deleteBook(id) {
+            if(!(await customConfirm("¿Seguro que deseas borrar este tomo del archivo?"))) return;
+            showLoader(true); await sb.from('libros').delete().eq('id', id); refreshData();
         }
 
         async function addCategory() {
             const nameInput = document.getElementById('newCatName');
-            const name = nameInput.value;
-            if(!name) return;
-            const slug = name.toLowerCase().replace(/ /g, '-').normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-            const newOrder = cats.length; 
-            showLoader(true);
-            await sb.from('categorias').insert([{ nombre: name, slug: slug, orden: newOrder }]);
-            nameInput.value = '';
-            refreshData();
+            if(!nameInput.value) return;
+            const slug = nameInput.value.toLowerCase().replace(/ /g, '-').normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            showLoader(true); await sb.from('categorias').insert([{ nombre: nameInput.value, slug: slug, orden: cats.length }]);
+            nameInput.value = ''; refreshData();
         }
 
         async function deleteCat(id) {
-            if(!(await customConfirm("Advertencia: Si borras la categoría, los libros que pertenecen a ella quedarán huérfanos. ¿Deseas continuar?"))) return;
-            showLoader(true);
-            await sb.from('categorias').delete().eq('id', id);
-            refreshData();
+            if(!(await customConfirm("Si borras la categoría, los libros quedarán huérfanos. ¿Continuar?"))) return;
+            showLoader(true); await sb.from('categorias').delete().eq('id', id); refreshData();
         }
 
         async function moveCat(index, direction) {
             if ((direction === -1 && index === 0) || (direction === 1 && index === cats.length - 1)) return;
-            let newCats = [...cats];
-            let temp = newCats[index];
-            newCats[index] = newCats[index + direction];
-            newCats[index + direction] = temp;
+            let newCats = [...cats]; let temp = newCats[index]; newCats[index] = newCats[index + direction]; newCats[index + direction] = temp;
             showLoader(true);
-            try {
-                for (let i = 0; i < newCats.length; i++) {
-                    await sb.from('categorias').update({ orden: i }).eq('id', newCats[i].id);
-                }
-            } catch(e) {
-                console.error(e);
-                customAlert("Ocurrió un error al reordenar las categorías");
-            }
-            await refreshData();
+            for (let i = 0; i < newCats.length; i++) await sb.from('categorias').update({ orden: i }).eq('id', newCats[i].id);
+            refreshData();
         }
 
-        // --- CREACIÓN Y EDICIÓN DE LIBROS ---
+        // --- FORMULARIO LIBROS ---
         function resetForm() {
             document.getElementById('bookForm').reset();
             document.getElementById('editBookId').value = '';
-            document.getElementById('bookIsAudio').checked = false; // Reset checkbox
+            document.getElementById('bookIsAudio').checked = false;
+            document.getElementById('bookIsPremium').checked = false;
+            document.getElementById('priceContainer').style.display = 'none';
             currentEditImageUrl = '';
             document.getElementById('imgPreview').classList.add('hidden');
             document.getElementById('previewPlaceholder').classList.remove('hidden');
-            document.getElementById('fileNameLabel').innerText = "Haz clic para subir desde dispositivo";
+            document.getElementById('fileNameLabel').innerText = "Haz clic para subir portada";
             document.getElementById('submitBtn').innerHTML = '<i class="fas fa-save"></i> PUBLICAR EN EL ARCHIVO';
             document.getElementById('formTitle').innerText = "Registrar Grimorio";
         }
 
-        function showUploadModal() {
-            resetForm();
-            switchView('upload', document.getElementById('menu-books'));
-            document.getElementById('currentViewTitle').innerText = "Nuevo Registro";
-        }
+        function showUploadModal() { resetForm(); switchView('upload', document.getElementById('menu-books')); document.getElementById('currentViewTitle').innerText = "Nuevo Registro"; }
 
         function editBook(id) {
             const book = books.find(b => b.id === id);
             if (!book) return;
-
             resetForm(); 
 
             document.getElementById('editBookId').value = book.id;
@@ -717,17 +664,23 @@
             document.getElementById('bookCategory').value = book.categoria_slug;
             document.getElementById('bookLink').value = book.download_url;
             document.getElementById('bookDesc').value = book.descripcion || '';
-            document.getElementById('bookIsAudio').checked = book.es_audiolibro || false; // Cargar estado de audiolibro
+            document.getElementById('bookIsAudio').checked = book.es_audiolibro || false;
+            document.getElementById('bookIsPremium').checked = book.es_premium || false;
+            
+            if(book.es_premium) {
+                document.getElementById('priceContainer').style.display = 'block';
+                document.getElementById('bookPrice').value = book.precio;
+            }
             
             currentEditImageUrl = book.image_url;
-            document.getElementById('imgPreview').src = book.image_url;
-            document.getElementById('imgPreview').classList.remove('hidden');
-            document.getElementById('previewPlaceholder').classList.add('hidden');
-            document.getElementById('fileNameLabel').innerText = "Cambiar imagen de portada";
+            if(book.image_url) {
+                document.getElementById('imgPreview').src = book.image_url;
+                document.getElementById('imgPreview').classList.remove('hidden');
+                document.getElementById('previewPlaceholder').classList.add('hidden');
+            }
             
             document.getElementById('submitBtn').innerHTML = '<i class="fas fa-edit"></i> ACTUALIZAR GRIMORIO';
             document.getElementById('formTitle').innerText = "Editando Registro";
-            
             switchView('upload', document.getElementById('menu-books'));
             document.getElementById('currentViewTitle').innerText = "Edición";
         }
@@ -737,31 +690,22 @@
             const btn = document.getElementById('submitBtn');
             const isEditing = document.getElementById('editBookId').value !== '';
             const bookId = document.getElementById('editBookId').value;
-            
             btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> PROCESANDO...';
 
             try {
                 const fileInput = document.getElementById('bookFile');
                 let finalImageUrl = currentEditImageUrl;
 
-                if (!isEditing && (!fileInput.files || !fileInput.files[0])) {
-                    throw new Error("Debes seleccionar una imagen de portada para el nuevo libro.");
-                }
+                if (!isEditing && (!fileInput.files || !fileInput.files[0])) throw new Error("Selecciona una portada.");
 
                 if (fileInput.files && fileInput.files[0]) {
                     const file = fileInput.files[0];
-                    
-                    const options = { maxSizeMB: 0.2, maxWidthOrHeight: 800, useWebWorker: true };
-                    const compressed = await window.imageCompression(file, options);
-                    
+                    const compressed = await window.imageCompression(file, { maxSizeMB: 0.2, maxWidthOrHeight: 800, useWebWorker: true });
                     const safeName = file.name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-zA-Z0-9.]/g, "_");
                     const fileName = `${Date.now()}_${safeName}`;
-                    
                     const { error: errUp } = await sb.storage.from('portadas').upload(fileName, compressed);
                     if (errUp) throw errUp;
-
-                    const { data: { publicUrl } } = sb.storage.from('portadas').getPublicUrl(fileName);
-                    finalImageUrl = publicUrl;
+                    finalImageUrl = sb.storage.from('portadas').getPublicUrl(fileName).data.publicUrl;
                 }
 
                 const bookData = {
@@ -770,56 +714,43 @@
                     download_url: document.getElementById('bookLink').value,
                     descripcion: document.getElementById('bookDesc').value,
                     image_url: finalImageUrl,
-                    es_audiolibro: document.getElementById('bookIsAudio').checked // Guardar estado del checkbox
+                    es_audiolibro: document.getElementById('bookIsAudio').checked,
+                    es_premium: document.getElementById('bookIsPremium').checked,
+                    precio: document.getElementById('bookIsPremium').checked ? parseFloat(document.getElementById('bookPrice').value || 0) : 0
                 };
 
                 if (isEditing) {
                     const { error } = await sb.from('libros').update(bookData).eq('id', bookId);
-                    if(error) throw error;
-                    customAlert("¡Registro actualizado correctamente!");
+                    if(error) throw error; customAlert("¡Tomo actualizado!");
                 } else {
                     const { error } = await sb.from('libros').insert([bookData]);
-                    if(error) throw error;
-                    customAlert("¡Registro archivado con éxito!");
+                    if(error) throw error; customAlert("¡Tomo archivado!");
                 }
 
-                resetForm();
-                switchView('books', document.getElementById('menu-books'));
-                refreshData();
-            } catch (err) { 
-                customAlert(err.message); 
-            } finally { 
-                btn.disabled = false; 
-                btn.innerHTML = isEditing ? '<i class="fas fa-edit"></i> ACTUALIZAR GRIMORIO' : '<i class="fas fa-save"></i> PUBLICAR EN EL ARCHIVO'; 
-            }
+                resetForm(); switchView('books', document.getElementById('menu-books')); refreshData();
+            } catch (err) { customAlert(err.message); } 
+            finally { btn.disabled = false; btn.innerHTML = isEditing ? '<i class="fas fa-edit"></i> ACTUALIZAR GRIMORIO' : '<i class="fas fa-save"></i> PUBLICAR EN EL ARCHIVO'; }
         });
 
-        // --- UTILIDADES ---
+        // --- UTILS ---
         function switchView(viewId, el) {
             document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
             document.getElementById(viewId + 'Section').classList.add('active');
-            
             if(el) {
-                document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
-                el.classList.add('active');
+                document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active', 'active-gold'));
+                el.classList.add(viewId === 'users' ? 'active-gold' : 'active');
             }
-
-            document.getElementById('currentViewTitle').innerText = viewId.charAt(0).toUpperCase() + viewId.slice(1);
-            document.querySelector('.content-area').scrollTop = 0;
+            document.getElementById('currentViewTitle').innerText = el.innerText;
         }
 
         function handleFilePreview(input) {
-            const label = document.getElementById('fileNameLabel');
-            const preview = document.getElementById('imgPreview');
-            const placeholder = document.getElementById('previewPlaceholder');
-
             if(input.files && input.files[0]) {
-                label.innerText = input.files[0].name;
+                document.getElementById('fileNameLabel').innerText = input.files[0].name;
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    preview.src = e.target.result;
-                    preview.classList.remove('hidden');
-                    placeholder.classList.add('hidden');
+                    document.getElementById('imgPreview').src = e.target.result;
+                    document.getElementById('imgPreview').classList.remove('hidden');
+                    document.getElementById('previewPlaceholder').classList.add('hidden');
                 }
                 reader.readAsDataURL(input.files[0]);
             }
@@ -827,10 +758,8 @@
 
         function filterBooks() {
             const term = document.getElementById('bookSearch').value.toLowerCase();
-            const rows = document.getElementById('booksListBody').querySelectorAll('.book-row');
-            rows.forEach(row => {
-                const title = row.querySelector('.row-title').innerText.toLowerCase();
-                row.style.display = title.includes(term) ? '' : 'none';
+            document.querySelectorAll('.book-row').forEach(row => {
+                row.style.display = row.querySelector('.row-title').innerText.toLowerCase().includes(term) ? '' : 'none';
             });
         }
 
